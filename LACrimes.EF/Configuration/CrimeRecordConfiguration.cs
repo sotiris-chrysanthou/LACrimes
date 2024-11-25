@@ -11,16 +11,17 @@ namespace LACrimes.EF.Configuration {
     public class CrimeRecordConfiguration : IEntityTypeConfiguration<CrimeRecord> {
         public void Configure(EntityTypeBuilder<CrimeRecord> builder) {
             // Set table name
-            builder.ToTable("CrimeRecord");
+            //builder.ToTable("CrimeRecord");
 
             // Set primary key
             builder.HasKey(crmR => crmR.ID);
 
             // Set properties
-            builder.Property(crmR => crmR.ID).HasColumnName("ID").IsRequired();
-            builder.Property(crmR => crmR.DrNo).HasColumnName("DrNo").IsRequired();
-            builder.Property(crmR => crmR.DateRptd).HasColumnName("DateRptd").IsRequired();
-            builder.Property(crmR => crmR.DateOcc).HasColumnName("DateOcc").IsRequired();
+            builder.Property(crmR => crmR.ID).IsRequired();
+            builder.Property(crmR => crmR.DrNo).IsRequired();
+            builder.Property(crmR => crmR.DateRptd).IsRequired();
+            builder.Property(crmR => crmR.DateOcc).IsRequired();
+            builder.Property(crmR => crmR.TimeOcc).IsRequired();
 
             builder.HasIndex(crmR => crmR.ID).IsUnique();
             builder.HasIndex(crmR => crmR.DrNo).IsUnique();
@@ -67,21 +68,12 @@ namespace LACrimes.EF.Configuration {
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasOne(crmR => crmR.Crime1)
-                .WithMany(crm => crm.CrimeRecordsCrime1)
-                .HasForeignKey(crmR => crmR.Crime1ID)
+            builder.HasMany(crmR => crmR.CrimeSeverities)
+                .WithOne(crmS => crmS.CrimeRecord)
+                .HasForeignKey(crmS => crmS.CrimeRecordID)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasOne(crmR => crmR.Crime2)
-                .WithMany(crm => crm.CrimeRecordsCrime2)
-                .HasForeignKey(crmR => crmR.Crime2ID)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            builder.HasOne(crmR => crmR.Crime3)
-                .WithMany(crm => crm.CrimeRecordsCrime3)
-                .HasForeignKey(crmR => crmR.Crime3ID)
-                .OnDelete(DeleteBehavior.Cascade);
 
         }
     }

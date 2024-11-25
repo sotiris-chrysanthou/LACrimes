@@ -9,7 +9,7 @@ namespace LACrimes.Model {
     public class Street {
 
         [Required] public Guid ID { get; set; }
-        [Required] public string Name { get; set; } = null!;
+        [Required] public String Name { get; set; } = null!;
 
 
         #region Relations
@@ -24,7 +24,7 @@ namespace LACrimes.Model {
             
         }
 
-        public Street(string name) { 
+        public Street(String name) { 
             ID = Guid.NewGuid();
             Name = name;
         }

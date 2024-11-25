@@ -13,7 +13,7 @@ namespace LACrimes.Tests.EF {
         public async Task CanAddAndRetrieveArea() {
             var repo = new AreaRepo(true);
 
-            var area = new Area { ID = Guid.NewGuid(), Code = 1, Name = "Test Area" };
+            var area = new Area { ID = Guid.NewGuid(), Code = "1", Name = "Test Area" };
             await repo.Add(area);
 
             var retrievedArea = await repo.GetById(area.ID);
@@ -27,17 +27,17 @@ namespace LACrimes.Tests.EF {
             var repo = new AreaRepo(true);
 
             var areaId = Guid.NewGuid();
-            var area = new Area { ID = areaId, Code = 1, Name = "Test Area" };
+            var area = new Area { ID = areaId, Code = "1", Name = "Test Area" };
             await repo.Add(area);
 
-            var updatedArea = new Area { ID = areaId, Code = 2, Name = "Updated Area" };
+            var updatedArea = new Area { ID = areaId, Code = "2", Name = "Updated Area" };
             await repo.Update(areaId, updatedArea);
 
             var retrievedArea = await repo.GetById(areaId);
 
             Assert.NotNull(retrievedArea);
             Assert.Equal("Updated Area", retrievedArea!.Name);
-            Assert.Equal(2, retrievedArea.Code);
+            Assert.Equal("2", retrievedArea.Code);
         }
 
         [Fact]
@@ -45,7 +45,7 @@ namespace LACrimes.Tests.EF {
             var repo = new AreaRepo(true);
 
             var areaId = Guid.NewGuid();
-            var area = new Area { ID = areaId, Code = 1, Name = "Test Area" };
+            var area = new Area { ID = areaId, Code = "1", Name = "Test Area" };
             await repo.Add(area);
 
             await repo.Delete(areaId);
@@ -61,8 +61,8 @@ namespace LACrimes.Tests.EF {
             IList<Area> areas = await repo.GetAll();
             Assert.Empty(areas);
 
-            var area1 = new Area { ID = Guid.NewGuid(), Code = 1, Name = "Test Area 1" };
-            var area2 = new Area { ID = Guid.NewGuid(), Code = 2, Name = "Test Area 2" };
+            var area1 = new Area { ID = Guid.NewGuid(), Code = "1", Name = "Test Area 1" };
+            var area2 = new Area { ID = Guid.NewGuid(), Code = "2", Name = "Test Area 2" };
             await repo.Add(area1);
             await repo.Add(area2);
 

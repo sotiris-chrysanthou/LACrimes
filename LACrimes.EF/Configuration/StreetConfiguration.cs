@@ -11,14 +11,14 @@ namespace LACrimes.EF.Configuration {
     public class StreetConfiguration : IEntityTypeConfiguration<Street> {
         public void Configure(EntityTypeBuilder<Street> builder) {
             // Set table name
-            builder.ToTable("Street");
+            //builder.ToTable("Street");
 
             // Set primary key
             builder.HasKey(s => s.ID);
 
             // Set properties
-            builder.Property(s => s.ID).HasColumnName("ID").IsRequired();
-            builder.Property(s => s.Name).HasColumnName("Name").IsRequired().HasMaxLength(100);
+            builder.Property(s => s.ID).IsRequired();
+            builder.Property(s => s.Name).IsRequired().HasMaxLength(100);
 
             // Set navigation properties
             builder.HasMany(s => s.CrimeRecordsStreet)

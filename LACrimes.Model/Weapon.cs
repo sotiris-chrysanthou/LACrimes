@@ -9,7 +9,7 @@ namespace LACrimes.Model {
     public class Weapon {
         [Required] public Guid ID { get; set; }
         [Required] public int Code { get; set; }
-        [Required] public string Desc { get; set; } = null!;
+        [Required] public String Desc { get; set; } = null!;
 
 
 
@@ -23,7 +23,7 @@ namespace LACrimes.Model {
             
         }
 
-        public Weapon(int code, string desc) {
+        public Weapon(int code, String desc) {
             ID = Guid.NewGuid();
             Code = code;
             Desc = desc;

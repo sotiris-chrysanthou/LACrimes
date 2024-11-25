@@ -9,8 +9,8 @@ namespace LACrimes.Model {
     public class Status {
 
         [Required] public Guid ID { get; set; }
-        [Required] public string Code { get; set; } = null!;
-        [Required] public string Desc { get; set; } = null!;
+        [Required] public String Code { get; set; } = null!;
+        [Required] public String Desc { get; set; } = null!;
 
 
         #region Relations
@@ -23,7 +23,7 @@ namespace LACrimes.Model {
             
         }
 
-        public Status(string code, string desc) {
+        public Status(String code, String desc) {
             ID = Guid.NewGuid();
             Code = code;
             Desc = desc;

@@ -10,7 +10,7 @@ namespace LACrimes.Model {
 
         [Required] public Guid ID { get; set; }
         [Required] public int Code { get; set; }
-        [Required] public string Desc { get; set; } = null!;
+        public String? Desc { get; set; } = null;
 
 
         #region Relations
@@ -23,7 +23,7 @@ namespace LACrimes.Model {
             
         }
 
-        public Premis(int code, string desc) {
+        public Premis(int code, String desc) {
             ID = Guid.NewGuid();
             Code = code;
             Desc = desc;

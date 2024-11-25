@@ -7,11 +7,12 @@ using LACrimes.EF.Configuration;
 using LACrimes.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Npgsql.EntityFrameworkCore.PostgreSQL;
 
 namespace LACrimes.EF.Context {
     public class LACrimeDbContext : DbContext {
 
-        private bool _onlyForTest;
+        private readonly bool _onlyForTest;
 
         public LACrimeDbContext(bool onlyForTest = false) : base() {
             _onlyForTest = onlyForTest;
@@ -27,6 +28,7 @@ namespace LACrimes.EF.Context {
         public DbSet<SubArea> SubAreas { get; set; } = null!;
         public DbSet<Victim> Victims { get; set; } = null!;
         public DbSet<Weapon> Weapons { get; set; } = null!;
+        public DbSet<CrimeSeverity> CrimeSeverities { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
             modelBuilder.ApplyConfiguration(new AreaConfiguration());
@@ -39,6 +41,31 @@ namespace LACrimes.EF.Context {
             modelBuilder.ApplyConfiguration(new SubAreaConfiguration());
             modelBuilder.ApplyConfiguration(new VictimConfiguration());
             modelBuilder.ApplyConfiguration(new WeaponConfiguration());
+            modelBuilder.ApplyConfiguration(new CrimeSeverityConfiguration());
+            foreach(var entity in modelBuilder.Model.GetEntityTypes()) {
+                // Set table name to lowercase
+                entity.SetTableName(entity.GetTableName()?.ToLower());
+
+                // Set column names to lowercase
+                foreach(var property in entity.GetProperties()) {
+                    property.SetColumnName(property.GetColumnName().ToLower());
+                }
+
+                // Set key names to lowercase
+                foreach(var key in entity.GetKeys()) {
+                    key.SetName(key.GetName()?.ToLower());
+                }
+
+                // Set foreign key names to lowercase
+                foreach(var foreignKey in entity.GetForeignKeys()) {
+                    foreignKey.SetConstraintName(foreignKey.GetConstraintName()?.ToLower());
+                }
+
+                // Set index names to lowercase
+                foreach(var index in entity.GetIndexes()) {
+                    index.SetDatabaseName(index.GetDatabaseName()?.ToLower());
+                }
+            }
             base.OnModelCreating(modelBuilder);
         }
 
@@ -57,7 +84,7 @@ namespace LACrimes.EF.Context {
             }
         }
 
-        private void TestConfiguring(DbContextOptionsBuilder optionsBuilder) {
+        private static void TestConfiguring(DbContextOptionsBuilder optionsBuilder) {
             if(optionsBuilder.IsConfigured) {
                 return;
             }

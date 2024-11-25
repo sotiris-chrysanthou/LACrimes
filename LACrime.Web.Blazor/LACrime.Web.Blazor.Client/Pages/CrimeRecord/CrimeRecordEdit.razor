@@ -1,0 +1,274 @@
+﻿@page "/CrimeRecord/edit/{ID:guid?}"
+@using BlazorBootstrap
+@using LACrimes.Web.Blazor.Shared
+@using System.ComponentModel.DataAnnotations
+@inject HttpClient httpClient
+@inject NavigationManager navigationManager
+@inject IJSRuntime jsRuntime
+
+@if (ID is null)
+{
+	<h3>Create crime record</h3>
+}
+else
+{
+	<h3>Edit custome record</h3>
+}
+@if (isLoading)
+{
+	<div class="spinner-border text-secondary" role="status">
+	</div>
+}
+
+<EditForm Model="@crimeRecordDto">
+	<div class="col-md-4">
+		<label for="drNo" class="form-label">Division of Records Number</label>
+		<InputText id="drNo" class="form-control" @bind-Value="crimeRecordDto.DrNo" />
+	</div>
+	<h4>Dates</h4>
+	<div class="mb-3">
+		<label for="dateRptd" class="form-label">Date Reported</label>
+		<InputDate id="dateRptd" class="form-control" @bind-Value="crimeRecordDto.DateRptd" />
+	</div>
+	<div class="row mb-3">
+		<div class="col-md-3">
+			<label for="dateOcc" class="form-label">Date Occurred</label>
+			<InputDate id="dateOcc" class="form-control" @bind-Value="crimeRecordDto.DateOcc" />
+		</div>
+		<div class="col-md-6">
+			<label for="timeOcc" class="form-label">Time Occurred</label>
+			<div class="md3">
+				<InputDate Type="InputDateType.Time" @bind-Value="crimeRecordDto.TimeOcc" />
+			</div>
+		</div>
+	</div>
+
+	<h4>Area</h4>
+	<div class="row mb-3">
+		<div class="col-md-4">
+			<label for="areaCode" class="form-label">Area Code</label>
+			<InputText id="areaCode" class="form-control" @bind-Value="crimeRecordDto.AreaCode" />
+		</div>
+		<div class="col-md-4">
+			<label for="areaName" class="form-label">Area Name</label>
+			<InputText id="areaName" class="form-control" @bind-Value="crimeRecordDto.AreaName" />
+		</div>
+		<div class="col-md-4">
+			<label for="subAreaCode" class="form-label">Sub Area Code</label>
+			<InputText id="subAreaCode" class="form-control" @bind-Value="crimeRecordDto.RpdDistNo" />
+		</div>
+	</div>
+
+	<h4>Victim</h4>
+	<div class="row mb-3">
+		<div class="col-md-4">
+			<label for="victAge" class="form-label">Victim Age</label>
+			<InputNumber id="victAge" class="form-control" @bind-Value="crimeRecordDto.VictAge" />
+		</div>
+		<div class="col-md-4">
+			<label for="victSex" class="form-label">Victim Sex</label>
+			<InputText id="victSex" class="form-control" @bind-Value="crimeRecordDto.VictSex" MaxLength="1" />
+		</div>
+		<div class="col-md-4">
+			<label for="victimDescent" class="form-label">Victim Descent</label>
+			<InputText id="victimDescent" class="form-control" @bind-Value="crimeRecordDto.VictimDescent" MaxLength="1" />
+		</div>
+	</div>
+
+	<h4>Premis</h4>
+	<div class="row mb-3">
+		<div class="col-md-6">
+			<label for="premisCode" class="form-label">Premis Code</label>
+			<InputNumber id="premisCode" class="form-control" @bind-Value="crimeRecordDto.PremisCode" />
+		</div>
+		<div class="col-md-6">
+			<label for="premisDesc" class="form-label">Premis Description</label>
+			<InputText id="premisDesc" class="form-control" @bind-Value="crimeRecordDto.PremisDesc" />
+		</div>
+	</div>
+
+	<h4>Status</h4>
+	<div class="row mb-3">
+		<div class="col-md-6">
+			<label for="statusCode" class="form-label">Status Code</label>
+			<InputText id="statusCode" class="form-control" @bind-Value="crimeRecordDto.StatusCode" MaxLength="2" />
+		</div>
+		<div class="col-md-6">
+			<label for="statusDesc" class="form-label">Status Description</label>
+			<InputText id="statusDesc" class="form-control" @bind-Value="crimeRecordDto.StatusDesc" />
+		</div>
+	</div>
+
+	<h4>Weapon</h4>
+	<div class="row mb-3">
+		<div class="col-md-6">
+			<label for="weaponCode" class="form-label">Weapon Code</label>
+			<InputNumber id="weaponCode" class="form-control" @bind-Value="crimeRecordDto.WeaponCode" />
+		</div>
+		<div class="col-md-6">
+			<label for="weaponDesc" class="form-label">Weapon Description</label>
+			<InputText id="weaponDesc" class="form-control" @bind-Value="crimeRecordDto.WeaponDesc" />
+		</div>
+	</div>
+
+	<h4>Streets</h4>
+	<div class="row mb-3">
+		<div class="col-md-6">
+			<label for="streetName" class="form-label">Street Name</label>
+			<InputText id="streetName" class="form-control" @bind-Value="crimeRecordDto.StreetName" />
+		</div>
+		<div class="col-md-6">
+			<label for="crossStreetName" class="form-label">Cross Street Name</label>
+			<InputText id="crossStreetName" class="form-control" @bind-Value="crimeRecordDto.CrossStreetName" />
+		</div>
+	</div>
+
+	<h4>Coordinates</h4>
+	<div class="row mb-3">
+		<div class="col-md-6">
+			<label for="lat" class="form-label">Latitude</label>
+			<InputNumber id="lat" class="form-control" @bind-Value="crimeRecordDto.Lat" />
+		</div>
+		<div class="col-md-6">
+			<label for="lon" class="form-label">Longitude</label>
+			<InputNumber id="lon" class="form-control" @bind-Value="crimeRecordDto.Lon" />
+		</div>
+	</div>
+
+
+
+	<h4>Crime Severities</h4>
+	<Button Color="ButtonColor.Primary" @onclick="AddCrimeSeverity">Add Crime Severity</Button>
+	<Button Color="ButtonColor.Danger" @onclick="DeleteCrimeSeverity">Delete Crime Severity</Button>
+	<div class="row mb-3">
+		<div class="col-md-4">
+			<label for="crimeCode" class="form-label">Crime Code</label>
+			<InputNumber id="crimeCode" class="form-control" TValue="int" @bind-Value="crimeCode" />
+		</div>
+		<div class="col-md-4">
+			<label for="crimeDesc" class="form-label">Crime Description</label>
+			<InputText id="crimeDesc" class="form-control" @bind-Value="crimeDesc" />
+		</div>
+	</div>
+	<table class="table mb-4">
+		<thead>
+			<tr>
+				<th>Code</th>
+				<th>Description</th>
+				<th>Severity</th>
+			</tr>
+		</thead>
+		<tbody>
+			@if (crimeRecordDto.CrimeSeverities != null && crimeRecordDto.CrimeSeverities.Count > 0)
+			{
+				@foreach (var severity in crimeRecordDto.CrimeSeverities)
+				{
+					<tr>
+						<td>@severity.Code</td>
+						<td>@severity.Desc</td>
+						<td>@severity.Severity</td>
+					</tr>
+				}
+			}
+		</tbody>
+	</table>
+
+	<div class="row mt-2">
+		<div class="col">
+			<Button Color="ButtonColor.Success" @onclick="OnSave"> Secondary </Button>
+			<Button color="ButtonColor.Secondary" @onclick="OnCancel">Back</Button>
+		</div>
+	</div>
+</EditForm>
+
+@code {
+	private bool isLoading = true;
+	public CrimeRecordDto crimeRecordDto { get; set; } = null!;
+	[Parameter] public Guid? ID { get; set; }
+	private int crimeCode = 0;
+	private String crimeDesc = String.Empty;
+
+	protected override async Task OnInitializedAsync()
+	{
+		await base.OnInitializedAsync();
+		if (ID.HasValue)
+		{
+			var response = await httpClient.GetFromJsonAsync<CrimeRecordDto>($"api/crimerecord/get/{ID}");
+			if (response is null)
+			{
+				await jsRuntime.InvokeVoidAsync("alert", "Crime record not found");
+				navigationManager.NavigateTo("/");
+				return;
+			}
+			isLoading = false;
+			return;
+		}
+		crimeRecordDto = new CrimeRecordDto();
+		crimeRecordDto.DateRptd = DateTime.UtcNow;
+		crimeRecordDto.DateOcc = DateTime.UtcNow;
+		isLoading = false;
+		return;
+	}
+
+
+	private void OnCancel()
+	{
+		navigationManager.NavigateTo("/");
+	}
+
+	private async Task OnSave()
+	{
+		HttpResponseMessage? response = null;
+		if (ID == null)
+		{
+			response = await httpClient.PostAsJsonAsync("api/CrimeRecord", crimeRecordDto);
+		}
+		else
+		{
+			response = await httpClient.PutAsJsonAsync("api/CrimeRecord", crimeRecordDto);
+		}
+		var msg = await response.Content.ReadAsStringAsync();
+		await jsRuntime.InvokeVoidAsync("alert", msg);
+		navigationManager.NavigateTo("/");
+	}
+
+	private async Task AddCrimeSeverity()
+	{
+		if (crimeRecordDto.CrimeSeverities is null)
+			crimeRecordDto.CrimeSeverities = new List<CrimeSeverityDto>();
+		if (crimeCode != 0)
+		{
+			CrimeCheckResponse? crimeCheckResponse = await httpClient.GetFromJsonAsync<CrimeCheckResponse>($"/api/Crime/Check/{crimeCode}&{crimeDesc}");
+			if (crimeCheckResponse is null)
+			{
+				await jsRuntime.InvokeVoidAsync("alert", "Crime not found");
+				return;
+			}
+			await jsRuntime.InvokeVoidAsync("alert", crimeCheckResponse.Message);
+			if (crimeCheckResponse.Status == CrimeCheckStatus.CrimeFoundDescDifferent || crimeCheckResponse.Status == CrimeCheckStatus.CrimeNotFoundDescEmpty)
+			{
+				return;
+			}
+			if (crimeCheckResponse.CrimeDto is not null)
+			{
+				CrimeSeverityDto crimeSeverityDto = new CrimeSeverityDto
+					{
+						Code = crimeCheckResponse.CrimeDto.Code,
+						Desc = crimeCheckResponse.CrimeDto.Desc,
+						Severity = crimeRecordDto.CrimeSeverities.Count + 1
+					};
+				crimeRecordDto.CrimeSeverities.Add(crimeSeverityDto);
+				crimeCode = 0;
+				crimeDesc = String.Empty;
+			}
+		}
+	}
+
+	private void DeleteCrimeSeverity()
+	{
+		if (crimeRecordDto.CrimeSeverities is null)
+			return;
+		if (crimeRecordDto.CrimeSeverities.Count > 0)
+			crimeRecordDto.CrimeSeverities.RemoveAt(crimeRecordDto.CrimeSeverities.Count - 1);
+	}
+}

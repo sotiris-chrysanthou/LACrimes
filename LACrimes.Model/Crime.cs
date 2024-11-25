@@ -13,9 +13,7 @@ namespace LACrimes.Model {
 
 
         #region Relations
-        public List<CrimeRecord> CrimeRecordsCrime1 { get; set; } = null!;
-        public List<CrimeRecord> CrimeRecordsCrime2 { get; set; } = null!;
-        public List<CrimeRecord> CrimeRecordsCrime3 { get; set; } = null!;
+        public List<CrimeSeverity> CrimeSeverities { get; set; } = null!;
         #endregion
 
         #region Constructors

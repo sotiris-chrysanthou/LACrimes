@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using LACrimes.EF.Context;
@@ -33,14 +34,26 @@ namespace LACrimes.EF.Repository {
             await context.SaveChangesAsync();
         }
 
-        public async Task<IList<Coordinates>> GetAll() {
+        public async Task<IList<Coordinates>> GetAll(Expression<Func<Coordinates, bool>>? predicate = null, bool IncludeAll = false) {
+            if(predicate == null) {
+                predicate = c => false; // Is false because I don't want to return all records by default. Too many records
+            }
             using var context = new LACrimeDbContext(_onlyForTest);
+            if(IncludeAll) {
+                return await context.Coordinates
+                    .Include(c => c.CrimeRecords)
+                    .Where(predicate)
+                    .ToListAsync();
+            }
             return await context.Coordinates
-                .Include(c => c.CrimeRecords)
+                .Where(predicate)
                 .ToListAsync();
         }
 
         public async Task<Coordinates?> GetById(Guid id) {
+            if(id == Guid.Empty) {
+                return null;
+            }
             using var context = new LACrimeDbContext(_onlyForTest);
             return await context.Coordinates
                 .Where(c => c.ID == id)
@@ -51,7 +64,7 @@ namespace LACrimes.EF.Repository {
         public async Task Update(Guid id, Coordinates entity) {
             using var context = new LACrimeDbContext(_onlyForTest);
             var dbCoordinates = await context.Coordinates
-                .Where(a => a.ID == id)
+                .Where(c => c.ID == id)
                 .SingleOrDefaultAsync();
             if(dbCoordinates == null) {
                 throw new Exception($"Coordinates with id: {id} not found");

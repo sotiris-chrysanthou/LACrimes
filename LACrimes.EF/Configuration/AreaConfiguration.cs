@@ -11,15 +11,15 @@ namespace LACrimes.EF.Configuration {
     public class AreaConfiguration : IEntityTypeConfiguration<Area> {
         public void Configure(EntityTypeBuilder<Area> builder) {
             // Set table name
-            builder.ToTable("Area");
+            //builder.ToTable("Area".ToLower());
 
             // Set primary key
             builder.HasKey(a => a.ID);
 
             // Set properties
-            builder.Property(a => a.ID).HasColumnName("ID").IsRequired();
-            builder.Property(a => a.Code).HasColumnName("Code").IsRequired();
-            builder.Property(a => a.Name).HasColumnName("Name").IsRequired().HasMaxLength(40);
+            builder.Property(a => a.ID).IsRequired();
+            builder.Property(a => a.Code).IsRequired();
+            builder.Property(a => a.Name).IsRequired().HasMaxLength(40);
 
             // Set navigation properties
             builder.HasMany(a => a.SubAreas)

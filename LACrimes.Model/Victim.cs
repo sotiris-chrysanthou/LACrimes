@@ -10,8 +10,8 @@ namespace LACrimes.Model {
 
         [Required] public Guid ID { get; set; }
         [Required] public int Age { get; set; }
-        [Required] public char Sex { get; set; }
-        [Required] public char Descent { get; set; }
+        [StringLength(1)] public String? Sex { get; set; }
+        [StringLength(1)] public String? Descent { get; set; }
 
 
         #region Relations
@@ -23,7 +23,7 @@ namespace LACrimes.Model {
             
         }
 
-        public Victim(int age, char sex, char descent) {
+        public Victim(int age, String sex, String descent) {
             ID = Guid.NewGuid();
             Age = age;
             Sex = sex;

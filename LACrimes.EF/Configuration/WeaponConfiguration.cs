@@ -11,15 +11,15 @@ namespace LACrimes.EF.Configuration {
     public class WeaponConfiguration : IEntityTypeConfiguration<Weapon> {
         public void Configure(EntityTypeBuilder<Weapon> builder) {
             // Set table name
-            builder.ToTable("Weapon");
+            //builder.ToTable("Weapon");
 
             // Set primary key
             builder.HasKey(a => a.ID);
 
             // Set properties
-            builder.Property(a => a.ID).HasColumnName("ID").IsRequired();
-            builder.Property(a => a.Code).HasColumnName("Code").IsRequired();
-            builder.Property(a => a.Desc).HasColumnName("Desc").IsRequired().HasMaxLength(100);
+            builder.Property(a => a.ID).IsRequired();
+            builder.Property(a => a.Code).IsRequired();
+            builder.Property(a => a.Desc).IsRequired().HasMaxLength(100);
 
             // Set navigation properties
             builder.HasMany(a => a.CrimeRecords)

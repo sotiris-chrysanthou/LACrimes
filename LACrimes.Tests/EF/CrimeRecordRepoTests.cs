@@ -39,12 +39,12 @@ namespace LACrimes.Tests.EF {
             var crimeRecordRepo = new CrimeRecordRepo(true);
             var crimeRecord = new CrimeRecord {
                 ID = Guid.NewGuid(),
-                DrNo = 456,
+                DrNo = "456",
                 DateRptd = DateTime.Now,
                 DateOcc = DateTime.Now,
-                Crime1ID = crime1.ID,//Guid.NewGuid(),
-                Crime2ID = crime2.ID,//Guid.NewGuid(),
-                Crime3ID = null,//Guid.NewGuid(),
+                //Crime1ID = crime1.ID,//Guid.NewGuid(),
+                //Crime2ID = crime2.ID,//Guid.NewGuid(),
+                //Crime3ID = null,//Guid.NewGuid(),
                 StreetID = null,//Guid.NewGuid(),
                 CrossStreetID = null,//Guid.NewGuid(),
                 SubAreaID = null,//Guid.NewGuid(),
@@ -59,7 +59,7 @@ namespace LACrimes.Tests.EF {
             var retrievedCrimeRecord = await crimeRecordRepo.GetById(crimeRecord.ID);
 
             Assert.NotNull(retrievedCrimeRecord);
-            Assert.Equal(456, retrievedCrimeRecord!.DrNo);
+            Assert.Equal("456", retrievedCrimeRecord!.DrNo);
         }
 
         [Fact]
@@ -89,12 +89,12 @@ namespace LACrimes.Tests.EF {
             var crimeRecordRepo = new CrimeRecordRepo(true);
             var crimeRecord = new CrimeRecord {
                 ID = Guid.NewGuid(),
-                DrNo = 456,
+                DrNo = "456",
                 DateRptd = DateTime.Now,
                 DateOcc = DateTime.Now,
-                Crime1ID = crime1.ID,//Guid.NewGuid(),
-                Crime2ID = crime2.ID,//Guid.NewGuid(),
-                Crime3ID = null,//Guid.NewGuid(),
+                //Crime1ID = crime1.ID,//Guid.NewGuid(),
+                //Crime2ID = crime2.ID,//Guid.NewGuid(),
+                //Crime3ID = null,//Guid.NewGuid(),
                 StreetID = null,//Guid.NewGuid(),
                 CrossStreetID = null,//Guid.NewGuid(),
                 SubAreaID = null,//Guid.NewGuid(),
@@ -108,12 +108,12 @@ namespace LACrimes.Tests.EF {
 
             var updatedCrimeRecord = new CrimeRecord {
                 ID = crimeRecord.ID,
-                DrNo = 789,
+                DrNo = "789",
                 DateRptd = DateTime.Now,
                 DateOcc = DateTime.Now,
-                Crime1ID = crimeRecord.Crime1ID,
-                Crime2ID = crimeRecord.Crime2ID,
-                Crime3ID = crimeRecord.Crime3ID,
+                //Crime1ID = crimeRecord.Crime1ID,
+                //Crime2ID = crimeRecord.Crime2ID,
+                //Crime3ID = crimeRecord.Crime3ID,
                 StreetID = crimeRecord.StreetID,
                 CrossStreetID = crimeRecord.CrossStreetID,
                 SubAreaID = crimeRecord.SubAreaID,
@@ -128,7 +128,7 @@ namespace LACrimes.Tests.EF {
             var retrievedCrimeRecord = await crimeRecordRepo.GetById(crimeRecord.ID);
 
             Assert.NotNull(retrievedCrimeRecord);
-            Assert.Equal(789, retrievedCrimeRecord!.DrNo);
+            Assert.Equal("789", retrievedCrimeRecord!.DrNo);
         }
 
         [Fact]
@@ -157,12 +157,12 @@ namespace LACrimes.Tests.EF {
             var crimeRecordRepo = new CrimeRecordRepo(true);
             var crimeRecord = new CrimeRecord {
                 ID = Guid.NewGuid(),
-                DrNo = 456,
+                DrNo = "456",
                 DateRptd = DateTime.Now,
                 DateOcc = DateTime.Now,
-                Crime1ID = crime1.ID,//Guid.NewGuid(),
-                Crime2ID = crime2.ID,//Guid.NewGuid(),
-                Crime3ID = null,//Guid.NewGuid(),
+                //Crime1ID = crime1.ID,//Guid.NewGuid(),
+                //Crime2ID = crime2.ID,//Guid.NewGuid(),
+                //Crime3ID = null,//Guid.NewGuid(),
                 StreetID = null,//Guid.NewGuid(),
                 CrossStreetID = null,//Guid.NewGuid(),
                 SubAreaID = null,//Guid.NewGuid(),
@@ -206,12 +206,12 @@ namespace LACrimes.Tests.EF {
             await coordinatesRepo.Add(coordinates);
             var crimeRecord1 = new CrimeRecord {
                 ID = Guid.NewGuid(),
-                DrNo = 123,
+                DrNo = "123",
                 DateRptd = DateTime.Now,
                 DateOcc = DateTime.Now,
-                Crime1ID = crime1.ID,//Guid.NewGuid(),
-                Crime2ID = crime2.ID,//Guid.NewGuid(),
-                Crime3ID = null,//Guid.NewGuid(),
+                //Crime1ID = crime1.ID,//Guid.NewGuid(),
+                //Crime2ID = crime2.ID,//Guid.NewGuid(),
+                //Crime3ID = null,//Guid.NewGuid(),
                 StreetID = null,//Guid.NewGuid(),
                 CrossStreetID = null,//Guid.NewGuid(),
                 SubAreaID = null,//Guid.NewGuid(),
@@ -224,12 +224,12 @@ namespace LACrimes.Tests.EF {
 
             var crimeRecord2 = new CrimeRecord {
                 ID = Guid.NewGuid(),
-                DrNo = 456,
+                DrNo = "456",
                 DateRptd = DateTime.Now,
                 DateOcc = DateTime.Now,
-                Crime1ID = crime1.ID,//Guid.NewGuid(),
-                Crime2ID = crime2.ID,//Guid.NewGuid(),
-                Crime3ID = null,//Guid.NewGuid(),
+                //Crime1ID = crime1.ID,//Guid.NewGuid(),
+                //Crime2ID = crime2.ID,//Guid.NewGuid(),
+                //Crime3ID = null,//Guid.NewGuid(),
                 StreetID = null,//Guid.NewGuid(),
                 CrossStreetID = null,//Guid.NewGuid(),
                 SubAreaID = null,//Guid.NewGuid(),

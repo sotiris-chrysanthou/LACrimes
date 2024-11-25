@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using LACrimes.EF.Context;
@@ -33,14 +34,27 @@ namespace LACrimes.EF.Repository {
             await context.SaveChangesAsync();
         }
 
-        public async Task<IList<Weapon>> GetAll() {
+        public async Task<IList<Weapon>> GetAll(Expression<Func<Weapon, bool>>? predicate = null, bool IncludeAll = false) {
+            if(predicate == null) {
+                predicate = w => false; // Is false because I don't want to return all records by default. Too many records
+            }
             using var context = new LACrimeDbContext(_onlyForTest);
+            if(IncludeAll) {
+                return await context.Weapons
+                    .Include(w => w.CrimeRecords)
+                    .Where(predicate)
+                    .ToListAsync();
+            }
             return await context.Weapons
                 .Include(w => w.CrimeRecords)
+                .Where(predicate)
                 .ToListAsync();
         }
 
         public async Task<Weapon?> GetById(Guid id) {
+            if(id == Guid.Empty) {
+                return null;
+            }
             using var context = new LACrimeDbContext(_onlyForTest);
             return await context.Weapons
                 .Where(w => w.ID == id)

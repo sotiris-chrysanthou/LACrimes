@@ -12,14 +12,14 @@ namespace LACrimes.EF.Configuration {
     public class SubAreaConfiguration : IEntityTypeConfiguration<SubArea> {
         public void Configure(EntityTypeBuilder<SubArea> builder) {
             // Set table name
-            builder.ToTable("SubArea");
+            //builder.ToTable("SubArea");
 
             // Set primary key
             builder.HasKey(sa => sa.ID);
 
             // Set properties
-            builder.Property(sa => sa.ID).HasColumnName("ID").IsRequired();
-            builder.Property(sa => sa.RpdDistNo).HasColumnName("RpdDistNo").IsRequired();
+            builder.Property(sa => sa.ID).IsRequired();
+            builder.Property(sa => sa.RpdDistNo).IsRequired();
 
             //Set navigation properties
             builder.HasMany(sa => sa.CrimeRecords)

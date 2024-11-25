@@ -16,15 +16,15 @@ namespace LACrimes.Tests.EF {
             ;
             var repo = new VictimRepo(true);
 
-            var victim = new Victim { ID = Guid.NewGuid(), Age = 30, Sex = 'M', Descent = 'W' };
+            var victim = new Victim { ID = Guid.NewGuid(), Age = 30, Sex = "M", Descent = "W" };
             await repo.Add(victim);
 
             var retrievedVictim = await repo.GetById(victim.ID);
 
             Assert.NotNull(retrievedVictim);
             Assert.Equal(30, retrievedVictim!.Age);
-            Assert.Equal('M', retrievedVictim.Sex);
-            Assert.Equal('W', retrievedVictim.Descent);
+            Assert.Equal("M", retrievedVictim.Sex);
+            Assert.Equal("W", retrievedVictim.Descent);
         }
 
         [Fact]
@@ -33,18 +33,18 @@ namespace LACrimes.Tests.EF {
             var repo = new VictimRepo(true);
 
             var victimId = Guid.NewGuid();
-            var victim = new Victim { ID = victimId, Age = 30, Sex = 'M', Descent = 'W' };
+            var victim = new Victim { ID = victimId, Age = 30, Sex = "M", Descent = "W" };
             await repo.Add(victim);
 
-            var updatedVictim = new Victim { ID = victimId, Age = 35, Sex = 'F', Descent = 'H' };
+            var updatedVictim = new Victim { ID = victimId, Age = 35, Sex = "F", Descent = "H" };
             await repo.Update(victimId, updatedVictim);
 
             var retrievedVictim = await repo.GetById(victimId);
 
             Assert.NotNull(retrievedVictim);
             Assert.Equal(35, retrievedVictim!.Age);
-            Assert.Equal('F', retrievedVictim.Sex);
-            Assert.Equal('H', retrievedVictim.Descent);
+            Assert.Equal("F", retrievedVictim.Sex);
+            Assert.Equal("H", retrievedVictim.Descent);
         }
 
         [Fact]
@@ -53,7 +53,7 @@ namespace LACrimes.Tests.EF {
             var repo = new VictimRepo(true);
 
             var victimId = Guid.NewGuid();
-            var victim = new Victim { ID = victimId, Age = 30, Sex = 'M', Descent = 'W' };
+            var victim = new Victim { ID = victimId, Age = 30, Sex = "M", Descent = "W" };
             await repo.Add(victim);
 
             await repo.Delete(victimId);
@@ -68,8 +68,8 @@ namespace LACrimes.Tests.EF {
             ;
             var repo = new VictimRepo(true);
 
-            var victim1 = new Victim { ID = Guid.NewGuid(), Age = 30, Sex = 'M', Descent = 'W' };
-            var victim2 = new Victim { ID = Guid.NewGuid(), Age = 25, Sex = 'F', Descent = 'H' };
+            var victim1 = new Victim { ID = Guid.NewGuid(), Age = 30, Sex = "M", Descent = "W" };
+            var victim2 = new Victim { ID = Guid.NewGuid(), Age = 25, Sex = "F", Descent = "H" };
             await repo.Add(victim1);
             await repo.Add(victim2);
 

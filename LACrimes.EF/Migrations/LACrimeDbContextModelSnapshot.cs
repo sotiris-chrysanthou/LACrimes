@@ -17,7 +17,7 @@ namespace LACrimes.EF.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.0-preview.3.24172.4")
+                .HasAnnotation("ProductVersion", "9.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -27,21 +27,23 @@ namespace LACrimes.EF.Migrations
                     b.Property<Guid>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
-                        .HasColumnName("ID");
+                        .HasColumnName("id");
 
-                    b.Property<int>("Code")
-                        .HasColumnType("integer")
-                        .HasColumnName("Code");
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("code");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(40)
                         .HasColumnType("character varying(40)")
-                        .HasColumnName("Name");
+                        .HasColumnName("name");
 
-                    b.HasKey("ID");
+                    b.HasKey("ID")
+                        .HasName("pk_areas");
 
-                    b.ToTable("Area", (string)null);
+                    b.ToTable("areas", (string)null);
                 });
 
             modelBuilder.Entity("LACrimes.Model.Coordinates", b =>
@@ -49,21 +51,22 @@ namespace LACrimes.EF.Migrations
                     b.Property<Guid>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
-                        .HasColumnName("ID");
+                        .HasColumnName("id");
 
                     b.Property<double>("Lat")
                         .HasPrecision(7, 4)
                         .HasColumnType("double precision")
-                        .HasColumnName("Lat");
+                        .HasColumnName("lat");
 
                     b.Property<double>("Lon")
                         .HasPrecision(7, 4)
                         .HasColumnType("double precision")
-                        .HasColumnName("Lon");
+                        .HasColumnName("lon");
 
-                    b.HasKey("ID");
+                    b.HasKey("ID")
+                        .HasName("pk_coordinates");
 
-                    b.ToTable("Coordinates", (string)null);
+                    b.ToTable("coordinates", (string)null);
                 });
 
             modelBuilder.Entity("LACrimes.Model.Crime", b =>
@@ -71,21 +74,22 @@ namespace LACrimes.EF.Migrations
                     b.Property<Guid>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
-                        .HasColumnName("Id");
+                        .HasColumnName("id");
 
                     b.Property<int>("Code")
                         .HasColumnType("integer")
-                        .HasColumnName("Code");
+                        .HasColumnName("code");
 
                     b.Property<string>("Desc")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)")
-                        .HasColumnName("Desc");
+                        .HasColumnName("desc");
 
-                    b.HasKey("ID");
+                    b.HasKey("ID")
+                        .HasName("pk_crimes");
 
-                    b.ToTable("Crime", (string)null);
+                    b.ToTable("crimes", (string)null);
                 });
 
             modelBuilder.Entity("LACrimes.Model.CrimeRecord", b =>
@@ -93,84 +97,124 @@ namespace LACrimes.EF.Migrations
                     b.Property<Guid>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
-                        .HasColumnName("ID");
+                        .HasColumnName("id");
 
                     b.Property<Guid>("CoordinatesID")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("Crime1ID")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("Crime2ID")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("Crime3ID")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("coordinatesid");
 
                     b.Property<Guid?>("CrossStreetID")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("crossstreetid");
 
                     b.Property<DateTime>("DateOcc")
                         .HasColumnType("timestamp with time zone")
-                        .HasColumnName("DateOcc");
+                        .HasColumnName("dateocc");
 
                     b.Property<DateTime>("DateRptd")
                         .HasColumnType("timestamp with time zone")
-                        .HasColumnName("DateRptd");
+                        .HasColumnName("daterptd");
 
-                    b.Property<int>("DrNo")
-                        .HasColumnType("integer")
-                        .HasColumnName("DrNo");
+                    b.Property<string>("DrNo")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("drno");
 
                     b.Property<Guid?>("PremisID")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("premisid");
 
                     b.Property<Guid?>("StatusID")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("statusid");
 
                     b.Property<Guid?>("StreetID")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("streetid");
 
                     b.Property<Guid?>("SubAreaID")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("subareaid");
+
+                    b.Property<TimeOnly>("TimeOcc")
+                        .HasColumnType("time without time zone")
+                        .HasColumnName("timeocc");
 
                     b.Property<Guid?>("VictimID")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("victimid");
 
                     b.Property<Guid?>("WeaponID")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("weaponid");
 
-                    b.HasKey("ID");
+                    b.HasKey("ID")
+                        .HasName("pk_crimesrecords");
 
-                    b.HasIndex("CoordinatesID");
+                    b.HasIndex("CoordinatesID")
+                        .HasDatabaseName("ix_crimesrecords_coordinatesid");
 
-                    b.HasIndex("Crime1ID");
-
-                    b.HasIndex("Crime2ID");
-
-                    b.HasIndex("Crime3ID");
-
-                    b.HasIndex("CrossStreetID");
+                    b.HasIndex("CrossStreetID")
+                        .HasDatabaseName("ix_crimesrecords_crossstreetid");
 
                     b.HasIndex("DrNo")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("ix_crimesrecords_drno");
 
                     b.HasIndex("ID")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("ix_crimesrecords_id");
 
-                    b.HasIndex("PremisID");
+                    b.HasIndex("PremisID")
+                        .HasDatabaseName("ix_crimesrecords_premisid");
 
-                    b.HasIndex("StatusID");
+                    b.HasIndex("StatusID")
+                        .HasDatabaseName("ix_crimesrecords_statusid");
 
-                    b.HasIndex("StreetID");
+                    b.HasIndex("StreetID")
+                        .HasDatabaseName("ix_crimesrecords_streetid");
 
-                    b.HasIndex("SubAreaID");
+                    b.HasIndex("SubAreaID")
+                        .HasDatabaseName("ix_crimesrecords_subareaid");
 
-                    b.HasIndex("VictimID");
+                    b.HasIndex("VictimID")
+                        .HasDatabaseName("ix_crimesrecords_victimid");
 
-                    b.HasIndex("WeaponID");
+                    b.HasIndex("WeaponID")
+                        .HasDatabaseName("ix_crimesrecords_weaponid");
 
-                    b.ToTable("CrimeRecord", (string)null);
+                    b.ToTable("crimesrecords", (string)null);
+                });
+
+            modelBuilder.Entity("LACrimes.Model.CrimeSeverity", b =>
+                {
+                    b.Property<Guid>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("CrimeID")
+                        .HasColumnType("uuid")
+                        .HasColumnName("crimeid");
+
+                    b.Property<Guid>("CrimeRecordID")
+                        .HasColumnType("uuid")
+                        .HasColumnName("crimerecordid");
+
+                    b.Property<int>("Severity")
+                        .HasColumnType("integer")
+                        .HasColumnName("severity");
+
+                    b.HasKey("ID")
+                        .HasName("pk_crimeseverities");
+
+                    b.HasIndex("CrimeID")
+                        .HasDatabaseName("ix_crimeseverities_crimeid");
+
+                    b.HasIndex("CrimeRecordID")
+                        .HasDatabaseName("ix_crimeseverities_crimerecordid");
+
+                    b.ToTable("crimeseverities", (string)null);
                 });
 
             modelBuilder.Entity("LACrimes.Model.Premis", b =>
@@ -178,21 +222,21 @@ namespace LACrimes.EF.Migrations
                     b.Property<Guid>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
-                        .HasColumnName("ID");
+                        .HasColumnName("id");
 
                     b.Property<int>("Code")
                         .HasColumnType("integer")
-                        .HasColumnName("Code");
+                        .HasColumnName("code");
 
                     b.Property<string>("Desc")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)")
-                        .HasColumnName("Desc");
+                        .HasColumnName("desc");
 
-                    b.HasKey("ID");
+                    b.HasKey("ID")
+                        .HasName("pk_premis");
 
-                    b.ToTable("Premis", (string)null);
+                    b.ToTable("premis", (string)null);
                 });
 
             modelBuilder.Entity("LACrimes.Model.Status", b =>
@@ -200,23 +244,24 @@ namespace LACrimes.EF.Migrations
                     b.Property<Guid>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
-                        .HasColumnName("ID");
+                        .HasColumnName("id");
 
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasMaxLength(2)
                         .HasColumnType("character varying(2)")
-                        .HasColumnName("Code");
+                        .HasColumnName("code");
 
                     b.Property<string>("Desc")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)")
-                        .HasColumnName("Desc");
+                        .HasColumnName("desc");
 
-                    b.HasKey("ID");
+                    b.HasKey("ID")
+                        .HasName("pk_statuses");
 
-                    b.ToTable("Status", (string)null);
+                    b.ToTable("statuses", (string)null);
                 });
 
             modelBuilder.Entity("LACrimes.Model.Street", b =>
@@ -224,17 +269,18 @@ namespace LACrimes.EF.Migrations
                     b.Property<Guid>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
-                        .HasColumnName("ID");
+                        .HasColumnName("id");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)")
-                        .HasColumnName("Name");
+                        .HasColumnName("name");
 
-                    b.HasKey("ID");
+                    b.HasKey("ID")
+                        .HasName("pk_streets");
 
-                    b.ToTable("Street", (string)null);
+                    b.ToTable("streets", (string)null);
                 });
 
             modelBuilder.Entity("LACrimes.Model.SubArea", b =>
@@ -242,20 +288,24 @@ namespace LACrimes.EF.Migrations
                     b.Property<Guid>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
-                        .HasColumnName("ID");
+                        .HasColumnName("id");
 
                     b.Property<Guid>("AreaID")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("areaid");
 
-                    b.Property<int>("RpdDistNo")
-                        .HasColumnType("integer")
-                        .HasColumnName("RpdDistNo");
+                    b.Property<string>("RpdDistNo")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("rpddistno");
 
-                    b.HasKey("ID");
+                    b.HasKey("ID")
+                        .HasName("pk_subareas");
 
-                    b.HasIndex("AreaID");
+                    b.HasIndex("AreaID")
+                        .HasDatabaseName("ix_subareas_areaid");
 
-                    b.ToTable("SubArea", (string)null);
+                    b.ToTable("subareas", (string)null);
                 });
 
             modelBuilder.Entity("LACrimes.Model.Victim", b =>
@@ -263,23 +313,26 @@ namespace LACrimes.EF.Migrations
                     b.Property<Guid>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
-                        .HasColumnName("ID");
+                        .HasColumnName("id");
 
                     b.Property<int>("Age")
                         .HasColumnType("integer")
-                        .HasColumnName("Age");
+                        .HasColumnName("age");
 
-                    b.Property<char>("Descent")
-                        .HasColumnType("character(1)")
-                        .HasColumnName("Descent");
+                    b.Property<string>("Descent")
+                        .HasMaxLength(1)
+                        .HasColumnType("character varying(1)")
+                        .HasColumnName("descent");
 
-                    b.Property<char>("Sex")
-                        .HasColumnType("character(1)")
-                        .HasColumnName("Sex");
+                    b.Property<string>("Sex")
+                        .HasMaxLength(1)
+                        .HasColumnType("character varying(1)")
+                        .HasColumnName("sex");
 
-                    b.HasKey("ID");
+                    b.HasKey("ID")
+                        .HasName("pk_victims");
 
-                    b.ToTable("Victim", (string)null);
+                    b.ToTable("victims", (string)null);
                 });
 
             modelBuilder.Entity("LACrimes.Model.Weapon", b =>
@@ -287,21 +340,22 @@ namespace LACrimes.EF.Migrations
                     b.Property<Guid>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
-                        .HasColumnName("ID");
+                        .HasColumnName("id");
 
                     b.Property<int>("Code")
                         .HasColumnType("integer")
-                        .HasColumnName("Code");
+                        .HasColumnName("code");
 
                     b.Property<string>("Desc")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)")
-                        .HasColumnName("Desc");
+                        .HasColumnName("desc");
 
-                    b.HasKey("ID");
+                    b.HasKey("ID")
+                        .HasName("pk_weapons");
 
-                    b.ToTable("Weapon", (string)null);
+                    b.ToTable("weapons", (string)null);
                 });
 
             modelBuilder.Entity("LACrimes.Model.CrimeRecord", b =>
@@ -310,66 +364,52 @@ namespace LACrimes.EF.Migrations
                         .WithMany("CrimeRecords")
                         .HasForeignKey("CoordinatesID")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("LACrimes.Model.Crime", "Crime1")
-                        .WithMany("CrimeRecordsCrime1")
-                        .HasForeignKey("Crime1ID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("LACrimes.Model.Crime", "Crime2")
-                        .WithMany("CrimeRecordsCrime2")
-                        .HasForeignKey("Crime2ID")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("LACrimes.Model.Crime", "Crime3")
-                        .WithMany("CrimeRecordsCrime3")
-                        .HasForeignKey("Crime3ID")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .IsRequired()
+                        .HasConstraintName("fk_crimesrecords_coordinates_coordinatesid");
 
                     b.HasOne("LACrimes.Model.Street", "CrossStreet")
                         .WithMany("CrimeRecordsCrossStreet")
                         .HasForeignKey("CrossStreetID")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("fk_crimesrecords_streets_crossstreetid");
 
                     b.HasOne("LACrimes.Model.Premis", "Premis")
                         .WithMany("CrimeRecords")
                         .HasForeignKey("PremisID")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("fk_crimesrecords_premis_premisid");
 
                     b.HasOne("LACrimes.Model.Status", "Status")
                         .WithMany("CrimeRecords")
                         .HasForeignKey("StatusID")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("fk_crimesrecords_statuses_statusid");
 
                     b.HasOne("LACrimes.Model.Street", "Street")
                         .WithMany("CrimeRecordsStreet")
                         .HasForeignKey("StreetID")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("fk_crimesrecords_streets_streetid");
 
                     b.HasOne("LACrimes.Model.SubArea", "SubArea")
                         .WithMany("CrimeRecords")
                         .HasForeignKey("SubAreaID")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("fk_crimesrecords_subareas_subareaid");
 
                     b.HasOne("LACrimes.Model.Victim", "Victim")
                         .WithMany("CrimeRecords")
                         .HasForeignKey("VictimID")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("fk_crimesrecords_victims_victimid");
 
                     b.HasOne("LACrimes.Model.Weapon", "Weapon")
                         .WithMany("CrimeRecords")
                         .HasForeignKey("WeaponID")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("fk_crimesrecords_weapons_weaponid");
 
                     b.Navigation("Coordinates");
-
-                    b.Navigation("Crime1");
-
-                    b.Navigation("Crime2");
-
-                    b.Navigation("Crime3");
 
                     b.Navigation("CrossStreet");
 
@@ -386,13 +426,35 @@ namespace LACrimes.EF.Migrations
                     b.Navigation("Weapon");
                 });
 
+            modelBuilder.Entity("LACrimes.Model.CrimeSeverity", b =>
+                {
+                    b.HasOne("LACrimes.Model.Crime", "Crime")
+                        .WithMany("CrimeSeverities")
+                        .HasForeignKey("CrimeID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_crimeseverities_crimes_crimeid");
+
+                    b.HasOne("LACrimes.Model.CrimeRecord", "CrimeRecord")
+                        .WithMany("CrimeSeverities")
+                        .HasForeignKey("CrimeRecordID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_crimeseverities_crimesrecords_crimerecordid");
+
+                    b.Navigation("Crime");
+
+                    b.Navigation("CrimeRecord");
+                });
+
             modelBuilder.Entity("LACrimes.Model.SubArea", b =>
                 {
                     b.HasOne("LACrimes.Model.Area", "Area")
                         .WithMany("SubAreas")
                         .HasForeignKey("AreaID")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_subareas_areas_areaid");
 
                     b.Navigation("Area");
                 });
@@ -409,11 +471,12 @@ namespace LACrimes.EF.Migrations
 
             modelBuilder.Entity("LACrimes.Model.Crime", b =>
                 {
-                    b.Navigation("CrimeRecordsCrime1");
+                    b.Navigation("CrimeSeverities");
+                });
 
-                    b.Navigation("CrimeRecordsCrime2");
-
-                    b.Navigation("CrimeRecordsCrime3");
+            modelBuilder.Entity("LACrimes.Model.CrimeRecord", b =>
+                {
+                    b.Navigation("CrimeSeverities");
                 });
 
             modelBuilder.Entity("LACrimes.Model.Premis", b =>

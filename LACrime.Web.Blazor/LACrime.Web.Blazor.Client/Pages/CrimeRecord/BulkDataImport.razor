@@ -1,0 +1,81 @@
+@page "/bulkdataimport"
+@inject HttpClient Http
+@inject NavigationManager Navigation
+
+<h3>Bulk Data Import</h3>
+
+<InputFile OnChange="HandleFileSelected" MaxAllowedSize="250000000" />
+<button @onclick="UploadFile">Upload</button>
+
+@if (!string.IsNullOrEmpty(Message))
+{
+    <p>@Message</p>
+}
+
+@code {
+    private IBrowserFile? selectedFile;
+    private string Message = string.Empty;
+
+    private void HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        selectedFile = e.File;
+    }
+
+    private async Task UploadFile()
+    {
+        if (selectedFile == null)
+        {
+            Message = "Please select a file.";
+            return;
+        }
+
+        try
+        {
+            var chunkSize = 1024 * 1024; // 1 MB chunks
+            var buffer = new byte[chunkSize];
+            long offset = 0;
+            var totalSize = selectedFile.Size;
+
+            using var stream = selectedFile.OpenReadStream(long.MaxValue); // Allow large files
+            int bytesRead;
+            while ((bytesRead = await stream.ReadAsync(buffer)) > 0)
+            {
+                using var content = new MultipartFormDataContent();
+                var byteArrayContent = new ByteArrayContent(buffer, 0, bytesRead);
+                byteArrayContent.Headers.Add("Content-Disposition", $"form-data; name=\"file\"; filename=\"{selectedFile.Name}\"");
+                byteArrayContent.Headers.Add("Content-Range", $"bytes {offset}-{offset + bytesRead - 1}/{totalSize}");
+                content.Add(byteArrayContent, "file", selectedFile.Name);
+
+                var response = await Http.PostAsync("/api/BulkDataImport/UploadChunk", content);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    Message = $"Failed to upload chunk: {response.ReasonPhrase}";
+                    return;
+                }
+
+                offset += bytesRead;
+            }
+
+            // After all chunks are uploaded, finalize the upload
+            var finalizeContent = new MultipartFormDataContent();
+            finalizeContent.Add(new StringContent(selectedFile.Name), "fileName");
+            var finalizeResponse = await Http.PostAsync("/api/BulkDataImport/FinalizeUpload", finalizeContent);
+
+            if (finalizeResponse.IsSuccessStatusCode)
+            {
+                Message = "Data imported successfully.";
+            }
+            else
+            {
+                Message = $"Failed to import data: {finalizeResponse.ReasonPhrase}";
+            }
+        }
+        catch (Exception ex)
+        {
+            Message = $"An error occurred: {ex.Message}";
+        }
+    }
+
+}
+

@@ -11,16 +11,16 @@ namespace LACrimes.EF.Configuration {
     public class VictimConfiguration : IEntityTypeConfiguration<Victim> {
         public void Configure(EntityTypeBuilder<Victim> builder) {
             // Set table name
-            builder.ToTable("Victim");
+            //builder.ToTable("Victim");
 
             // Set primary key
             builder.HasKey(v => v.ID);
 
             // Set properties
-            builder.Property(v => v.ID).HasColumnName("ID").IsRequired();
-            builder.Property(v => v.Sex).HasColumnName("Sex").IsRequired();
-            builder.Property(v => v.Age).HasColumnName("Age").IsRequired();
-            builder.Property(v => v.Descent).HasColumnName("Descent").IsRequired();
+            builder.Property(v => v.ID).IsRequired();
+            builder.Property(v => v.Sex).HasMaxLength(1);
+            builder.Property(v => v.Age).IsRequired();
+            builder.Property(v => v.Descent).HasMaxLength(1);
 
             // Set navigation properties
             builder.HasMany(v => v.CrimeRecords)
