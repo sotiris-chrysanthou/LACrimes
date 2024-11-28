@@ -1,6 +1,7 @@
 @page "/bulkdataimport"
-@inject HttpClient Http
-@inject NavigationManager Navigation
+@inject HttpClient httpClient
+@inject NavigationManager navigationManager
+@inject IJSRuntime jsRuntime
 
 <h3>Bulk Data Import</h3>
 
@@ -46,7 +47,7 @@
                 byteArrayContent.Headers.Add("Content-Range", $"bytes {offset}-{offset + bytesRead - 1}/{totalSize}");
                 content.Add(byteArrayContent, "file", selectedFile.Name);
 
-                var response = await Http.PostAsync("/api/BulkDataImport/UploadChunk", content);
+                var response = await httpClient.PostAsync("/api/BulkDataImport/UploadChunk", content);
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -60,7 +61,7 @@
             // After all chunks are uploaded, finalize the upload
             var finalizeContent = new MultipartFormDataContent();
             finalizeContent.Add(new StringContent(selectedFile.Name), "fileName");
-            var finalizeResponse = await Http.PostAsync("/api/BulkDataImport/FinalizeUpload", finalizeContent);
+            var finalizeResponse = await httpClient.PostAsync("/api/BulkDataImport/FinalizeUpload", finalizeContent);
 
             if (finalizeResponse.IsSuccessStatusCode)
             {

@@ -79,23 +79,27 @@ namespace LACrimes.Web.Blazor.Server.Controllers {
         [HttpPost]
         public async Task<ActionResult<String>> Post(CrimeRecordDto crimeRecordDto) {
             (object result, laLists? lists) = await PostCrimeRecord(crimeRecordDto);
-            if( result is not null && result is Exception) {
-                return ((Exception)result).Message;
-            }
-            else if(result is not null && result is DbException) {
-                return ((DbException)result).Message;
-            }
-            else if(result is not null && result is DbUpdateException) {
-                return ((DbUpdateException)result).Message;
+            if(result is not null && result is Exception) {
+                return Ok(((Exception)result).Message);
+            } else if(result is not null && result is DbException) {
+                return BadRequest(((DbException)result).Message);
+            } else if(result is not null && result is DbUpdateException) {
+                return BadRequest(((DbUpdateException)result).Message);
             }
             if(result is not null && result is String)
-                return (String)result;
+                return BadRequest((String)result);
             return BadRequest("An error occurred while creating the crime record. Please contact support");
         }
 
         internal async Task<(object, laLists?)> PostCrimeRecord(CrimeRecordDto crimeRecordDto, laLists? lists = null) {
             try {
+                bool update = crimeRecordDto.ID != null;
                 (CrimeRecord crimeRecord, lists) = await CrmRctrlHelper.CreateCrimeRecord(crimeRecordDto, lists: lists);
+                if(update) {
+                    await _crimeRecordRepo.Update(crimeRecord.ID, crimeRecord);
+                    await CrmRctrlHelper.ManageCrimeSeverities(crimeRecordDto, crimeRecord);
+                    return ($"Crime record updated successfully with DrNo {crimeRecord.DrNo}", lists);
+                }
                 await _crimeRecordRepo.Add(crimeRecord);
                 crimeRecordDto.ID = crimeRecord.ID;
                 await CrmRctrlHelper.PostNewCrimeSeverities(crimeRecordDto);
@@ -114,16 +118,19 @@ namespace LACrimes.Web.Blazor.Server.Controllers {
         // PUT api/<CrimeRecordController>/5
         [HttpPut]
         public async Task<ActionResult> Put(CrimeRecordDto crimeRecordDto) {
-            try {
-                //TODO: Implement this
-                //CrimeRecord crimeRecord = await CrmRctrlHelper.CreateCrimeRecord(crimeRecordDto, crimeRecordDto.ID);
-                //await _crimeRecordRepo.Update(crimeRecord.ID, crimeRecord);
-                //await CrmRctrlHelper.ManageCrimeSeverities(crimeRecordDto, crimeRecord);
-
-                return Ok();
-            } catch(DbException) {
-                return BadRequest($"Crime record with ID: {crimeRecordDto.ID} not found");
+            (object result, laLists? lists) = await PostCrimeRecord(crimeRecordDto);
+            if(result is not null && result is Exception) {
+                return Ok(((Exception)result).Message);
+            } else if(result is not null && result is DbException) {
+                return BadRequest(((DbException)result).Message);
+            } else if(result is not null && result is DbUpdateException) {
+                return BadRequest(((DbUpdateException)result).Message);
             }
+            if(result is not null && result is String)
+                return BadRequest((String)result);
+            return BadRequest("An error occurred while creating the crime record. Please contact support");
+
+
         }
 
         // DELETE api/<CrimeRecordController>/5

@@ -150,17 +150,17 @@ else
 			<InputText id="crimeDesc" class="form-control" @bind-Value="crimeDesc" />
 		</div>
 	</div>
-	<table class="table mb-4">
-		<thead>
-			<tr>
-				<th>Code</th>
-				<th>Description</th>
-				<th>Severity</th>
-			</tr>
-		</thead>
-		<tbody>
-			@if (crimeRecordDto.CrimeSeverities != null && crimeRecordDto.CrimeSeverities.Count > 0)
-			{
+	@if (crimeRecordDto.CrimeSeverities != null && crimeRecordDto.CrimeSeverities.Count > 0)
+	{
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th>Code</th>
+					<th>Description</th>
+					<th>Severity</th>
+				</tr>
+			</thead>
+			<tbody>
 				@foreach (var severity in crimeRecordDto.CrimeSeverities)
 				{
 					<tr>
@@ -169,9 +169,9 @@ else
 						<td>@severity.Severity</td>
 					</tr>
 				}
-			}
-		</tbody>
-	</table>
+			</tbody>
+		</table>
+	}
 
 	<div class="row mt-2">
 		<div class="col">

@@ -4,6 +4,7 @@ using LACrimes.EF.Repository;
 using LACrimes.Model;
 using LACrimes.Web.Blazor.Server.Controllers;
 using Microsoft.AspNetCore.Http.Features;
+using LACrimes.EF.Context;
 
 internal class Program {
     private static void Main(string[] args) {
@@ -22,7 +23,7 @@ internal class Program {
         builder.Services.AddScoped<IEntityRepo<SubArea>, SubAreaRepo>();
         builder.Services.AddScoped<IEntityRepo<Victim>, VictimRepo>();
         builder.Services.AddScoped<IEntityRepo<Weapon>, WeaponRepo>();
-
+        builder.Services.AddScoped<LACrimeDbContext, LACrimeDbContext>();
         builder.Services.AddScoped<CrimeRecordController>();
 
         builder.Services.AddRazorComponents()

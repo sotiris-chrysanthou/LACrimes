@@ -34,7 +34,7 @@ namespace LACrimes.Web.Blazor.Shared {
             
         }
 
-        [Required] public Guid ID { get; set; }
+        [Required] public Guid? ID { get; set; }
         [Required] public String DrNo { get; set; } = null!;
         [Required] public DateTime DateRptd { get; set; }
         [Required] public DateTime DateOcc { get; set; }

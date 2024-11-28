@@ -35,21 +35,25 @@ namespace LACrimes.Web.Blazor.Server.Helpers {
             }
         }
 
-        internal static async Task<CrimeSeverity> CreateCrimeSeverity(Guid crimeRecordID, CrimeSeverityDto crimeSeverityDto) {
+        internal static async Task<CrimeSeverity> CreateCrimeSeverity(Guid? crimeRecordID, CrimeSeverityDto crimeSeverityDto) {
+            if(crimeRecordID is null) {
+                throw new ArgumentNullException(nameof(crimeRecordID));
+            }
+
             CrimeRepo crimeRepo = new CrimeRepo();
             IList<Crime> crimeList = await crimeRepo.GetAll(c => c.Code == crimeSeverityDto.Code && c.Desc == crimeSeverityDto.Desc);
             if(crimeList.Count > 0) {
                 return new CrimeSeverity {
                     ID = Guid.NewGuid(),
                     CrimeID = crimeList[0].ID,
-                    CrimeRecordID = crimeRecordID,
+                    CrimeRecordID = (Guid)crimeRecordID,
                     Severity = crimeSeverityDto.Severity
                 };
             }
             return new CrimeSeverity {
                 ID = Guid.NewGuid(),
                 Crime = new Crime(crimeSeverityDto.Code, crimeSeverityDto.Desc),
-                CrimeRecordID = crimeRecordID,
+                CrimeRecordID = (Guid)crimeRecordID,
                 Severity = crimeSeverityDto.Severity
             };
         }
@@ -78,7 +82,7 @@ namespace LACrimes.Web.Blazor.Server.Helpers {
             (Coordinates? coordinates, bool isNewCoordinates, lists) = await FetchOrCreateCoordinates(crimeRecordDto, lists);
 
             var crimeRecord = new CrimeRecord {
-                ID = id ?? Guid.NewGuid(),
+                ID = crimeRecordDto.ID ?? Guid.NewGuid(),
                 DrNo = crimeRecordDto.DrNo,
                 DateOcc = crimeRecordDto.DateOcc.ToUniversalTime(),
                 DateRptd = crimeRecordDto.DateRptd.ToUniversalTime(),
