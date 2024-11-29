@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
 
 namespace LACrimes.Web.Blazor.Shared.Quest {
+    [JsonSerializable(typeof(Quest2ReportDto))]
+
     public class Quest3ReportDto {
         public string? AreaCode { get; set; } = null;
         public string? AreaName { get; set; } = null;

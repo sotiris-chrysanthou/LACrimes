@@ -2,8 +2,8 @@
 
 namespace LACrimes.Web.Blazor.Shared.Quest {
     [JsonSerializable(typeof(Quest2ReportDto))]
-    public class Quest2ReportDto {
-        public DateTime ReportDate { get; set; }
-        public int TotalReports { get; set; }
+    public class Quest4ReportDto {
+        public int Hour { get; set; }
+        public double AverageCrimes { get; set; }
     }
 }

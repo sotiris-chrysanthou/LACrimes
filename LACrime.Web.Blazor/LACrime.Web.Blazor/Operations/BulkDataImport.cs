@@ -229,17 +229,17 @@ namespace LACrimes.Web.Blazor.Server.Operations {
             }
 
             double lat;
-            if(!double.TryParse(csvModel.Lat, out lat)) {
+            if(!double.TryParse(csvModel.Lat.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture, out lat)) {
                 var errorMessage = $"Error parsing Lat for DrNo {csvModel.DrNo}: Invalid double value{Environment.NewLine}";
                 _ = laLogger.Log(_logger, errorMessage, LogType.Warning);
-                lat = 0; // Assign a default value or handle as needed
+                lat = 0;
             }
 
             double lon;
-            if(!double.TryParse(csvModel.Lon, out lon)) {
+            if(!double.TryParse(csvModel.Lon.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture, out lon)) {
                 var errorMessage = $"Error parsing Lon for DrNo {csvModel.DrNo}: Invalid double value{Environment.NewLine}";
                 _ = laLogger.Log(_logger, errorMessage, LogType.Warning);
-                lon = 0; // Assign a default value or handle as needed
+                lon = 0;
             }
 
             var crimeRecordDto = new CrimeRecordDto {
