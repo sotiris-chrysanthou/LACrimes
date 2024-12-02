@@ -2,6 +2,7 @@
 @using System.Net.Http.Json
 @using LACrimes.Web.Blazor.Shared.Quest
 @using System.Globalization
+@using System.Text.Json
 @inject HttpClient Http
 @inject IJSRuntime jsRuntime
 
@@ -9,67 +10,103 @@
 <h6>Find the most common “Crm Cd” in a specified bounding box (as designated by GPS coordinates) for a specific day.</h6>
 
 <div>
-    <label for="date">Date:</label>
-    <input type="date" id="date" @bind="date" />
+	<label for="date">Date:</label>
+	<input type="date" id="date" @bind="date" />
 
-    <label for="minLat">Min Latitude:</label>
-    <input type="number" id="minLat" @bind="minLat" step="any" />
+	<label for="minLat">Min Latitude:</label>
+	<input type="number" id="minLat" @bind="minLat" step="any" />
 
-    <label for="maxLat">Max Latitude:</label>
-    <input type="number" id="maxLat" @bind="maxLat" step="any" />
+	<label for="maxLat">Max Latitude:</label>
+	<input type="number" id="maxLat" @bind="maxLat" step="any" />
 
-    <label for="minLon">Min Longitude:</label>
-    <input type="number" id="minLon" @bind="minLon" step="any" />
+	<label for="minLon">Min Longitude:</label>
+	<input type="number" id="minLon" @bind="minLon" step="any" />
 
-    <label for="maxLon">Max Longitude:</label>
-    <input type="number" id="maxLon" @bind="maxLon" step="any" />
+	<label for="maxLon">Max Longitude:</label>
+	<input type="number" id="maxLon" @bind="maxLon" step="any" />
 
-    <button @onclick="GetQuest5Data">Get Reports</button>
+	<button @onclick="GetQuest5Data">Get Reports</button>
 </div>
 
 @if (isLoading)
 {
-    <div class="spinner-border text-secondary" role="status">
-    </div>
+	<div class="spinner-border text-secondary" role="status">
+	</div>
 }
 
 @if (quest5ReportDto != null)
 {
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Crime Code</th>
-                <th>Total Reports</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>@quest5ReportDto.CrmCd</td>
-                <td>@quest5ReportDto.TotalReports</td>
-            </tr>
-        </tbody>
-    </table>
+	<table class="table table-bordered">
+		<thead>
+			<tr>
+				<th>Crime Code</th>
+				<th>Total Reports</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>@quest5ReportDto.CrmCd</td>
+				<td>@quest5ReportDto.TotalReports</td>
+			</tr>
+		</tbody>
+	</table>
 }
 
 @code {
 	private bool isLoading = false;
 	private DateTime date;
-    private double minLat;
-    private double maxLat;
-    private double minLon;
-    private double maxLon;
-    private Quest5ReportDto? quest5ReportDto;
+	private double minLat;
+	private double maxLat;
+	private double minLon;
+	private double maxLon;
+	private Quest5ReportDto? quest5ReportDto;
 
-    private async Task GetQuest5Data()
-    {
-		isLoading = true;
-		var response = await Http.GetFromJsonAsync<Quest5ReportDto>($"api/Quests/Quest5?date={date:yyyy-MM-dd}&minLat={minLat.ToString(CultureInfo.InvariantCulture)}&maxLat={maxLat.ToString(CultureInfo.InvariantCulture)}&minLon={minLon.ToString(CultureInfo.InvariantCulture)}&maxLon={maxLon.ToString(CultureInfo.InvariantCulture)}");
-		isLoading = false;
-        if (response is null)
-        {
-            await jsRuntime.InvokeVoidAsync("alert", "No data found");
-            return;
-        }
-        quest5ReportDto = response;
-    }
+	private async Task GetQuest5Data()
+	{
+		if (date == DateTime.MinValue)
+		{
+			await jsRuntime.InvokeVoidAsync("alert", "Please select a date");
+			return;
+		}
+
+		if (minLat >= maxLat)
+		{
+			await jsRuntime.InvokeVoidAsync("alert", "Min Latitude must be less than Max Latitude");
+			return;
+		}
+		if (minLon >= maxLon)
+		{
+			await jsRuntime.InvokeVoidAsync("alert", "Min Longitude must be less than Max Longitude");
+			return;
+		}
+
+		try
+		{
+			isLoading = true;
+			var response = await Http.GetFromJsonAsync<Quest5ReportDto>($"api/Quests/Quest5?date={date:yyyy-MM-dd}&minLat={minLat.ToString(CultureInfo.InvariantCulture)}&maxLat={maxLat.ToString(CultureInfo.InvariantCulture)}&minLon={minLon.ToString(CultureInfo.InvariantCulture)}&maxLon={maxLon.ToString(CultureInfo.InvariantCulture)}");
+			isLoading = false;
+			if (response is null)
+			{
+				await jsRuntime.InvokeVoidAsync("alert", "No data found");
+				return;
+			}
+			quest5ReportDto = response;
+		}
+		catch (HttpRequestException ex)
+		{
+			await jsRuntime.InvokeVoidAsync("alert", ex.Message);
+			isLoading = false;
+		}
+		catch (JsonException ex)
+		{
+			await jsRuntime.InvokeVoidAsync("alert", "No report Found");
+			isLoading = false;
+		}
+		catch (Exception ex)
+		{
+			await jsRuntime.InvokeVoidAsync("alert", ex.Message);
+			isLoading = false;
+		}
+
+	}
 }

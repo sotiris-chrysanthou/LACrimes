@@ -7,7 +7,7 @@ FROM
 INNER JOIN crimeseverities crms ON crms.crimeid = crm.id
 INNER JOIN crimesrecords crmr ON crmr.id = crms.crimerecordid
 WHERE
-    crmr.dateocc >= @startDate AND crmr.dateocc <= @endDate
+    crmr.dateocc BETWEEN @startdate AND @enddate
     AND crms.severity = @severity
 GROUP BY crm.code, crm."desc"
 ORDER BY TotalReports DESC

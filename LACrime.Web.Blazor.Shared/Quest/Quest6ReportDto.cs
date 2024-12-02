@@ -8,13 +8,13 @@ namespace LACrimes.Web.Blazor.Shared.Quest {
     }
 
     public class Quest6AreaDto {
-        public string AreaName { get; set; } = string.Empty;
+        public String AreaName { get; set; } = string.Empty;
         public DateTime DateOccurred { get; set; }
         public int TotalCrimes { get; set; }
     }
 
     public class Quest6RptDistNoDto {
-        public string RptDistNo { get; set; } = string.Empty;
+        public String RptDistNo { get; set; } = string.Empty;
         public DateTime DateOccurred { get; set; }
         public int TotalCrimes { get; set; }
     }
