@@ -29,8 +29,15 @@
 	<div class="spinner-border text-secondary" role="status">
 	</div>
 }
-@if (quest2ReportDto != null)
+@if (quest2Reports != null)
 {
+	<br />
+	<br />
+	<text>
+		Number of Reports : @quest2Reports.Count()
+	</text>
+	<br />
+	<br />
 	<table class="table table-bordered">
 		<thead>
 			<tr>
@@ -39,7 +46,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			@foreach (var report in quest2ReportDto)
+			@foreach (var report in quest2Reports)
 			{
 				<tr>
 					<td>@report.ReportDate.ToShortDateString()</td>
@@ -55,7 +62,7 @@
 	private int crmCd;
 	private DateTime startDate = DateTime.Today;
 	private DateTime endDate = DateTime.Today;
-	private List<Quest2ReportDto>? quest2ReportDto = null;
+	private List<Quest2ReportDto>? quest2Reports = null;
 
 	private async Task GetCrimeReports()
 	{
@@ -74,7 +81,7 @@
 				await jsRuntime.InvokeVoidAsync("alert", "No data found");
 				return;
 			}
-			quest2ReportDto = response;
+			quest2Reports = response;
 		}
 		catch (HttpRequestException ex)
 		{

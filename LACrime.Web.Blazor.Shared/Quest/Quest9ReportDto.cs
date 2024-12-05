@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace LACrimes.Web.Blazor.Shared.Quest {
-    [JsonSerializable(typeof(Quest2ReportDto))]
+    [JsonSerializable(typeof(Quest9ReportDto))]
     public class Quest9ReportDto {
         public int AgeGroupStart { get; set; }
         public String? AgeGroup { get; set; }

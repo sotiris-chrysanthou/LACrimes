@@ -29,8 +29,15 @@
 	</div>
 }
 
-@if (quest1ReportDto != null)
+@if (quest1Reports != null)
 {
+    <br />
+    <br />
+    <text>
+        Number of Reports : @quest1Reports.Count()
+    </text>
+    <br />
+    <br />
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -40,7 +47,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var report in quest1ReportDto)
+            @foreach (var report in quest1Reports)
             {
                 <tr>
                     <td>@report.CrmCd</td>
@@ -56,7 +63,7 @@
 	private bool isLoading = false;
     private DateTime startDate = DateTime.Today;
     private DateTime endDate = DateTime.Today;
-    private List<Quest1ReportDto>? quest1ReportDto = null;
+    private List<Quest1ReportDto>? quest1Reports = null;
 
     private async Task FetchReports()
     {
@@ -76,7 +83,7 @@
                 await jsRuntime.InvokeVoidAsync("alert", "No data found");
                 return;
             }
-            quest1ReportDto = response.OrderByDescending(r => r.TotalReports).ToList();
+            quest1Reports = response.OrderByDescending(r => r.TotalReports).ToList();
 		}
 		catch (HttpRequestException ex)
 		{

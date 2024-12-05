@@ -16,13 +16,21 @@
     <input type="date" @bind="date" />
 </div>
 <button @onclick="GetMostCommonCrime">Get Most Common Crime</button>
+
 @if (isLoading)
 {
     <div class="spinner-border text-secondary" role="status">
     </div>
 }
-@if (quest3ReportDto != null)
+@if (quest3Reports != null)
 {
+    <br />
+    <br />
+    <text>
+        Number of Reports : @quest3Reports.Count()
+    </text>
+    <br />
+    <br />
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -34,7 +42,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var crime in quest3ReportDto)
+            @foreach (var crime in quest3Reports)
             {
                 <tr>
                     <td>@crime.AreaCode</td>
@@ -51,7 +59,7 @@
 @code {
     private bool isLoading = false;
     private DateTime date = DateTime.Today;
-    private List<Quest3ReportDto>? quest3ReportDto = null;
+    private List<Quest3ReportDto>? quest3Reports = null;
 
     private async Task GetMostCommonCrime()
     {
@@ -71,7 +79,7 @@
                 await jsRuntime.InvokeVoidAsync("alert", "No data found");
                 return;
             }
-            quest3ReportDto = response;
+            quest3Reports = response;
         }
         catch (HttpRequestException ex)
         {

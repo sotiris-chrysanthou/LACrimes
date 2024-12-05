@@ -416,5 +416,38 @@ namespace LACrimes.Web.Blazor.Server.Operations {
                 return BadRequest(ex.Message);
             }
         }
+        [HttpGet("Quest12")]
+        public async Task<IActionResult> Quest12([FromQuery] DateTime date, [FromQuery] TimeOnly startTime, [FromQuery] TimeOnly endTime) {
+            try {
+                string filePath = Path.Combine(Directory.GetCurrentDirectory(), "SqlQueries", "Quest12.sql");
+                string sqlQuery = await System.IO.File.ReadAllTextAsync(filePath);
+
+                if(string.IsNullOrEmpty(sqlQuery)) {
+                    return BadRequest("SQL Query not found");
+                }
+
+                var parameters = new[] {
+                    new NpgsqlParameter("@date", date),
+                    new NpgsqlParameter("@startTime", startTime),
+                    new NpgsqlParameter("@endTime", endTime)
+                };
+
+                DataTable dt = await LACrimeSys.ExecuteQueryAsync(_context, sqlQuery, parameters);
+                var divisionCount = dt.AsEnumerable()
+                    .Select(row => new Quest12ReportDto {
+                        DrNo = row["DrNo"].ToString()
+                    });
+
+                if(divisionCount == null) {
+                    return NotFound();
+                }
+
+                return Ok(divisionCount);
+            } catch(Exception ex) {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
     }
 }

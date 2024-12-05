@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 
 namespace LACrimes.Web.Blazor.Shared.Quest {
-    [JsonSerializable(typeof(Quest2ReportDto))]
+    [JsonSerializable(typeof(Quest3ReportDto))]
 
     public class Quest3ReportDto {
         public String? AreaCode { get; set; } = null;

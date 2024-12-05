@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 
 namespace LACrimes.Web.Blazor.Shared.Quest {
-    [JsonSerializable(typeof(Quest2ReportDto))]
+    [JsonSerializable(typeof(Quest6ReportDto))]
     public class Quest6ReportDto {
         public List<Quest6AreaDto> TopAreas { get; set; } = new();
         public List<Quest6RptDistNoDto> TopRptDistNos { get; set; } = new();

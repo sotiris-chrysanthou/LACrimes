@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace LACrimes.Web.Blazor.Shared.Quest {
-    [JsonSerializable(typeof(Quest2ReportDto))]
+    [JsonSerializable(typeof(Quest8ReportDto))]
     public class Quest8ReportDto {
         public String? Crime1Code { get; set; }
         public String? Crime1Description { get; set; }

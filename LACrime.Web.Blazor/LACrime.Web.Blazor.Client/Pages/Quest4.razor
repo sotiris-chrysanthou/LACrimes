@@ -24,7 +24,7 @@
     </div>
 }
 
-@if (quest4ReportDto != null)
+@if (quest4Reports != null)
 {
     <table class="table table-bordered">
         <thead>
@@ -34,7 +34,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var report in quest4ReportDto)
+            @foreach (var report in quest4Reports)
             {
                 <tr>
                     <td>@report.Hour</td>
@@ -49,7 +49,7 @@
     private bool isLoading = false;
     private DateTime startDate = DateTime.Today;
     private DateTime endDate = DateTime.Today;
-    private List<Quest4ReportDto>? quest4ReportDto = null;
+    private List<Quest4ReportDto>? quest4Reports = null;
 
     private async Task FetchReports()
     {
@@ -69,7 +69,7 @@
                 await jsRuntime.InvokeVoidAsync("alert", "No data found");
                 return;
             }
-            quest4ReportDto = response;
+            quest4Reports = response;
         }
         catch (HttpRequestException ex)
         {
