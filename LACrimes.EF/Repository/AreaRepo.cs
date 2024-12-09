@@ -46,6 +46,7 @@ namespace LACrimes.EF.Repository {
                     .ToListAsync();
             }
             return await context.Areas
+                //.Include(a => a.SubAreas)
                 .Where(predicate)
                 .ToListAsync();
         }

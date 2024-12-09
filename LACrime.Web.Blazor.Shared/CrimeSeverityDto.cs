@@ -20,6 +20,7 @@ namespace LACrimes.Web.Blazor.Shared {
         public CrimeSeverityDto(CrimeSeverity crmS) {
             Code = crmS.Crime.Code;
             Desc = crmS.Crime.Desc;
+            CrimeID = crmS.CrimeID;
             Severity = crmS.Severity;
         }
 

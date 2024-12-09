@@ -36,7 +36,7 @@ namespace LACrimes.EF.Repository {
 
         public async Task<IList<SubArea>> GetAll(Expression<Func<SubArea, bool>>? predicate = null, bool IncludeAll = false) {
             if(predicate == null) {
-                predicate = sa => false; // Is false because I don't want to return all records by default. Too many records
+                predicate = sa => true; // Is true because I  want to return all records by default.
             }
             using var context = new LACrimeDbContext(_onlyForTest);
             if(IncludeAll) {
@@ -46,6 +46,7 @@ namespace LACrimes.EF.Repository {
                     .ToListAsync();
             }
             return await context.SubAreas
+                .Include(sa => sa.Area)
                 .Where(predicate)
                 .ToListAsync();
         }

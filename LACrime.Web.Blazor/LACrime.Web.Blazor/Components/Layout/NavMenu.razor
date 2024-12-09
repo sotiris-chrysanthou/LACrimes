@@ -1,6 +1,9 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@inject NavigationManager Navigation
+@using Microsoft.AspNetCore.Components.Authorization
+
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="">LACrimes.Web.Blazor.Server</a>
+        <a class="navbar-brand" href="">LA Crimes</a>
     </div>
 </div>
 
@@ -14,89 +17,75 @@
             </NavLink>
         </div>
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
+        <AuthorizeView Roles="User,Admin">
+            <Authorized>
+                <div class="nav-item px-3">
+                    <span class="nav-link">
+                        <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Quests
+                    </span>
+                    <nav class="nav flex-column ms-3">
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="Quest1">Quest 1</NavLink>
+                        </div>
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="Quest2">Quest 2</NavLink>
+                        </div>
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="Quest3">Quest 3</NavLink>
+                        </div>
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="Quest4">Quest 4</NavLink>
+                        </div>
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="Quest5">Quest 5</NavLink>
+                        </div>
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="Quest6">Quest 6</NavLink>
+                        </div>
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="Quest7">Quest 7</NavLink>
+                        </div>
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="Quest8">Quest 8</NavLink>
+                        </div>
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="Quest9">Quest 9</NavLink>
+                        </div>
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="Quest10">Quest 10</NavLink>
+                        </div>
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="Quest11">Quest 11</NavLink>
+                        </div>
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="Quest12">Quest 12</NavLink>
+                        </div>
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="Quest13">Quest 13</NavLink>
+                        </div>
+                    </nav>
+                </div>
+            </Authorized>
+        </AuthorizeView>
+        <AuthorizeView Roles="User,Admin">
+            <Authorized>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="CrimeRecord/edit">
+                        <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> New crime record
+                    </NavLink>
+                </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="SearchCrimeRecord">
+                        <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Search crime record
+                    </NavLink>
+                </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="bulkdataimport">
+                        <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Bulk data import (Only for dev)
+                    </NavLink>
+                </div>
+            </Authorized>
+        </AuthorizeView>
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="Quest1">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Quest 1
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="Quest2">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Quest 2
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="Quest3">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Quest 3
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="Quest4">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Quest 4
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="Quest5">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Quest 5
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="Quest6">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Quest 6
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="Quest7">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Quest 7
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="Quest8">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Quest 8
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="Quest9">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Quest 9
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="quest10">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Quest 10
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="quest11">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Quest 11
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="quest12">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Quest 12
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="CrimeRecord/edit">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> New crime record
-            </NavLink>
-        </div>
     </nav>
 </div>
-

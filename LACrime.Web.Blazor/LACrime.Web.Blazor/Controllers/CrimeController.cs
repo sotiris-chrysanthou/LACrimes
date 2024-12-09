@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 using Microsoft.AspNetCore.Mvc;
 using System.Resources;
 using LACrimes.Web.Blazor.Server.Helpers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LACrimes.Web.Blazor.Server.Controllers {
     public class CrimeController : Controller {
@@ -22,6 +23,7 @@ namespace LACrimes.Web.Blazor.Server.Controllers {
         // GET: api/<Crime>/get/null
         [Route("/api/Crime/get/{predicateStr}")]
         [HttpGet]
+        [Authorize(Roles = "User,Admin")]
         public async Task<ActionResult<IEnumerable<CrimeDto>?>> Get(string predicateStr) {
             Expression<Func<Crime, bool>>? predicate = null;
             try {

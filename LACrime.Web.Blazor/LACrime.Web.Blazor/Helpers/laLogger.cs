@@ -32,7 +32,6 @@
                     Console.WriteLine(message);
                     logger.LogError(message);
                     break;
-
             }
         }
     }

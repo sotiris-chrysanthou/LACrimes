@@ -97,6 +97,22 @@ namespace LACrimes.EF.Repository {
             dbCrimeRecord.SubAreaID = entity.SubAreaID;
             dbCrimeRecord.VictimID = entity.VictimID;
             dbCrimeRecord.WeaponID = entity.WeaponID;
+
+
+            //CrimeSeverityRepo crimeSeverityRepo = new CrimeSeverityRepo();
+            //foreach(var crimeSeverity in entity.CrimeSeverities) {
+            //    if(crimeSeverity.ID == Guid.Empty) {
+            //        await crimeSeverityRepo.Add(crimeSeverity);
+            //    } else {
+            //        await crimeSeverityRepo.Update(crimeSeverity.ID, crimeSeverity);
+            //    }
+            //}
+            //foreach(var crms in dbCrimeRecord.CrimeSeverities) {
+            //    if(!entity.CrimeSeverities.Any(c => c.ID == crms.ID)) {
+            //        await crimeSeverityRepo.Delete(crms.ID);
+            //    }
+            //}
+
             await context.SaveChangesAsync();
         }
     }

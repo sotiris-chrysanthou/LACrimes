@@ -1,82 +1,113 @@
 @page "/bulkdataimport"
+@using LACrimes.Web.Blazor.Client.Extensions
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Net.Http.Headers
 @inject HttpClient httpClient
-@inject NavigationManager navigationManager
 @inject IJSRuntime jsRuntime
+@inject NavigationManager navigationManager
+@inject AuthenticationStateProvider authStateProvider
+@rendermode InteractiveAuto
+@attribute [Authorize(Roles = "User,Admin")]
 
-<h3>Bulk Data Import</h3>
-
-<InputFile OnChange="HandleFileSelected" MaxAllowedSize="250000000" />
-<button @onclick="UploadFile">Upload</button>
-
-@if (!string.IsNullOrEmpty(Message))
+@if (isLoggingIn)
 {
-    <p>@Message</p>
+	<div class="spinner-border text-secondary" role="status"></div>
 }
+else
+{
 
+	<h3>Bulk Data Import</h3>
+
+	<InputFile OnChange="HandleFileSelected" MaxAllowedSize="250000000" />
+	<button @onclick="UploadFile">Upload</button>
+
+	if (!string.IsNullOrEmpty(Message))
+	{
+		<p>@Message</p>
+	}
+}
 @code {
-    private IBrowserFile? selectedFile;
-    private string Message = string.Empty;
+	private IBrowserFile? selectedFile;
+	private string Message = string.Empty;
+	private bool isLoggingIn = true;
 
-    private void HandleFileSelected(InputFileChangeEventArgs e)
-    {
-        selectedFile = e.File;
-    }
+	protected override async Task OnInitializedAsync()
+	{
+		var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+		var token = await customAuthStateProvider.GetToken();
+		if (!String.IsNullOrWhiteSpace(token))
+		{
+			httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+			isLoggingIn = false;
+		}
+		else
+		{
+			await jsRuntime.InvokeVoidAsync("alert", "Please login first");
+			navigationManager.NavigateTo("/login", true);
+		}
+	}
 
-    private async Task UploadFile()
-    {
-        if (selectedFile == null)
-        {
-            Message = "Please select a file.";
-            return;
-        }
+	private void HandleFileSelected(InputFileChangeEventArgs e)
+	{
+		selectedFile = e.File;
+	}
 
-        try
-        {
-            var chunkSize = 1024 * 1024; // 1 MB chunks
-            var buffer = new byte[chunkSize];
-            long offset = 0;
-            var totalSize = selectedFile.Size;
+	private async Task UploadFile()
+	{
+		if (selectedFile == null)
+		{
+			Message = "Please select a file.";
+			return;
+		}
 
-            using var stream = selectedFile.OpenReadStream(long.MaxValue); // Allow large files
-            int bytesRead;
-            while ((bytesRead = await stream.ReadAsync(buffer)) > 0)
-            {
-                using var content = new MultipartFormDataContent();
-                var byteArrayContent = new ByteArrayContent(buffer, 0, bytesRead);
-                byteArrayContent.Headers.Add("Content-Disposition", $"form-data; name=\"file\"; filename=\"{selectedFile.Name}\"");
-                byteArrayContent.Headers.Add("Content-Range", $"bytes {offset}-{offset + bytesRead - 1}/{totalSize}");
-                content.Add(byteArrayContent, "file", selectedFile.Name);
+		try
+		{
+			var chunkSize = 1024 * 1024; // 1 MB chunks
+			var buffer = new byte[chunkSize];
+			long offset = 0;
+			var totalSize = selectedFile.Size;
 
-                var response = await httpClient.PostAsync("/api/BulkDataImport/UploadChunk", content);
+			using var stream = selectedFile.OpenReadStream(long.MaxValue); // Allow large files
+			int bytesRead;
+			while ((bytesRead = await stream.ReadAsync(buffer)) > 0)
+			{
+				using var content = new MultipartFormDataContent();
+				var byteArrayContent = new ByteArrayContent(buffer, 0, bytesRead);
+				byteArrayContent.Headers.Add("Content-Disposition", $"form-data; name=\"file\"; filename=\"{selectedFile.Name}\"");
+				byteArrayContent.Headers.Add("Content-Range", $"bytes {offset}-{offset + bytesRead - 1}/{totalSize}");
+				content.Add(byteArrayContent, "file", selectedFile.Name);
 
-                if (!response.IsSuccessStatusCode)
-                {
-                    Message = $"Failed to upload chunk: {response.ReasonPhrase}";
-                    return;
-                }
+				var response = await httpClient.PostAsync("/api/BulkDataImport/UploadChunk", content);
 
-                offset += bytesRead;
-            }
+				if (!response.IsSuccessStatusCode)
+				{
+					Message = $"Failed to upload chunk: {response.ReasonPhrase}";
+					return;
+				}
 
-            // After all chunks are uploaded, finalize the upload
-            var finalizeContent = new MultipartFormDataContent();
-            finalizeContent.Add(new StringContent(selectedFile.Name), "fileName");
-            var finalizeResponse = await httpClient.PostAsync("/api/BulkDataImport/FinalizeUpload", finalizeContent);
+				offset += bytesRead;
+			}
 
-            if (finalizeResponse.IsSuccessStatusCode)
-            {
-                Message = "Data imported successfully.";
-            }
-            else
-            {
-                Message = $"Failed to import data: {finalizeResponse.ReasonPhrase}";
-            }
-        }
-        catch (Exception ex)
-        {
-            Message = $"An error occurred: {ex.Message}";
-        }
-    }
+			// After all chunks are uploaded, finalize the upload
+			var finalizeContent = new MultipartFormDataContent();
+			finalizeContent.Add(new StringContent(selectedFile.Name), "fileName");
+			var finalizeResponse = await httpClient.PostAsync("/api/BulkDataImport/FinalizeUpload", finalizeContent);
+
+			if (finalizeResponse.IsSuccessStatusCode)
+			{
+				Message = "Data imported successfully.";
+			}
+			else
+			{
+				Message = $"Failed to import data: {finalizeResponse.ReasonPhrase}";
+			}
+		}
+		catch (Exception ex)
+		{
+			Message = $"An error occurred: {ex.Message}";
+		}
+	}
 
 }
 

@@ -13,6 +13,8 @@ using System.Resources;
 using System.Linq.Dynamic.Core;
 using LACrimes.Web.Blazor.Server.Helpers;
 using Microsoft.EntityFrameworkCore;
+using LACrimes.Web.Blazor.Shared.CrimeRecordDtos;
+using LACrimes.EF.Context;
 
 namespace LACrimes.Web.Blazor.Server.Controllers {
     [Route("api/[controller]")]
@@ -31,6 +33,7 @@ namespace LACrimes.Web.Blazor.Server.Controllers {
         // GET: api/<CrimeRecordController>/get/null
         [Route("/api/CrimeRecord/get/{predicateStr}")]
         [HttpGet]
+        [Authorize(Roles = "User,Admin")]
         public async Task<ActionResult<IEnumerable<CrimeRecordDto>?>> Get(string predicateStr) {
             Expression<Func<CrimeRecord, bool>>? predicate = null;
             try {
@@ -46,6 +49,7 @@ namespace LACrimes.Web.Blazor.Server.Controllers {
         // GET api/<CrimeRecordController>/get/5
         [Route("/api/CrimeRecord/get/{id:guid}")]
         [HttpGet]
+        [Authorize(Roles = "User,Admin")]
         public async Task<ActionResult<CrimeRecordDto?>> GetById(Guid id) {
             try {
                 var result = await _crimeRecordRepo.GetById(id);
@@ -62,6 +66,7 @@ namespace LACrimes.Web.Blazor.Server.Controllers {
         // GET api/<CrimeRecordController>/details/5
         [Route("/api/CrimeRecord/details/{id:guid}")]
         [HttpGet]
+        [Authorize(Roles = "User,Admin")]
         public async Task<ActionResult<CrimeRecordDto?>> GetByIdDetails(Guid id) {
             try {
                 var result = await _crimeRecordRepo.GetById(id);
@@ -77,6 +82,7 @@ namespace LACrimes.Web.Blazor.Server.Controllers {
 
         // POST api/<CrimeRecordController>
         [HttpPost]
+        [Authorize(Roles = "User,Admin")]
         public async Task<ActionResult<String>> Post(CrimeRecordDto crimeRecordDto) {
             (object result, laLists? lists) = await PostCrimeRecord(crimeRecordDto);
             if(result is not null && result is Exception) {
@@ -117,6 +123,7 @@ namespace LACrimes.Web.Blazor.Server.Controllers {
 
         // PUT api/<CrimeRecordController>/5
         [HttpPut]
+        [Authorize(Roles = "User,Admin")]
         public async Task<ActionResult> Put(CrimeRecordDto crimeRecordDto) {
             (object result, laLists? lists) = await PostCrimeRecord(crimeRecordDto);
             if(result is not null && result is Exception) {
@@ -135,6 +142,7 @@ namespace LACrimes.Web.Blazor.Server.Controllers {
 
         // DELETE api/<CrimeRecordController>/5
         [HttpDelete("{id:guid}")]
+        [Authorize(Roles = "User,Admin")]
         public async Task<ActionResult> Delete(Guid id) {
             try {
                 var crimeRecord = await _crimeRecordRepo.GetById(id);

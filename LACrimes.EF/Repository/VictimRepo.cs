@@ -36,7 +36,7 @@ namespace LACrimes.EF.Repository {
 
         public async Task<IList<Victim>> GetAll(Expression<Func<Victim, bool>>? predicate = null, bool IncludeAll = false) {
             if(predicate == null) {
-                predicate = v => false; // Is false because I don't want to return all records by default. Too many records
+                predicate = v => false; // Is true because I want to return all records by default.
             }
             using var context = new LACrimeDbContext(_onlyForTest);
             if(IncludeAll) {

@@ -1,0 +1,157 @@
+﻿@page "/quest6"
+@using LACrimes.Web.Blazor.Client.Extensions
+@using LACrimes.Web.Blazor.Shared.Quest
+@using System.Text.Json
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Net.Http.Headers
+@inject HttpClient httpClient
+@inject IJSRuntime jsRuntime
+@inject NavigationManager navigationManager
+@inject IJSRuntime jsRuntime
+@inject AuthenticationStateProvider authStateProvider
+@rendermode InteractiveAuto
+@attribute [Authorize(Roles = "User,Admin")]
+
+<h3>Quest 6</h3>
+<h6>Find the top-5 Area names with regards to total number of crimes reported per day for a specific date range. The same for Rpt Dist No.</h6>
+@if (isLoggingIn)
+{
+	<div class="spinner-border text-secondary" role="status"></div>
+}
+else
+{
+	<div>
+		<label>Start Date:</label>
+		<input type="date" @bind="startDate" />
+
+		<label>End Date:</label>
+		<input type="date" @bind="endDate" />
+		<button @onclick="GetQuest6Data">Get Data</button>
+	</div>
+	if (isLoading)
+	{
+		<div class="spinner-border text-secondary" role="status">
+		</div>
+	}
+
+
+
+	if (quest6ReportDto != null)
+	{
+		<h4>Top 5 Area Names</h4>
+		<table>
+			<thead>
+				<tr>
+					<th>Area Name</th>
+					<th>Date Occurred</th>
+					<th>Total Crimes</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var area in quest6ReportDto.TopAreas)
+				{
+					<tr>
+						<td>@area.AreaName</td>
+						<td>@area.DateOccurred.ToShortDateString()</td>
+						<td>@area.TotalCrimes</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+
+		<h4>Top 5 Rpt Dist No</h4>
+		<table>
+			<thead>
+				<tr>
+					<th>Rpt Dist No</th>
+					<th>Date Occurred</th>
+					<th>Total Crimes</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var rpt in quest6ReportDto.TopRptDistNos)
+				{
+					<tr>
+						<td>@rpt.RptDistNo</td>
+						<td>@rpt.DateOccurred.ToShortDateString()</td>
+						<td>@rpt.TotalCrimes</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	}
+}
+@code {
+
+	private bool isLoading = false;
+	private bool isLoggingIn = true;
+	private DateTime startDate = DateTime.Now.AddDays(-7);
+	private DateTime endDate = DateTime.Now;
+	private Quest6ReportDto? quest6ReportDto;
+
+	protected override async Task OnInitializedAsync()
+	{
+		var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+		var token = await customAuthStateProvider.GetToken();
+		if (!String.IsNullOrWhiteSpace(token))
+		{
+			httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+			isLoggingIn = false;
+		}
+		else
+		{
+			await jsRuntime.InvokeVoidAsync("alert", "Please login first");
+			navigationManager.NavigateTo("/login", true);
+		}
+	}
+
+	private async Task GetQuest6Data()
+	{
+
+		if (startDate > endDate)
+		{
+			await jsRuntime.InvokeVoidAsync("alert", "Start date cannot be greater than end date");
+			return;
+		}
+
+		try
+		{
+			isLoading = true;
+			var url = $"api/Quests/Quest6?startDate={startDate:yyyy-MM-dd}&endDate={endDate:yyyy-MM-dd}";
+			var result = await httpClient.GetFromJsonAsync<Quest6ReportDto>(url);
+			isLoading = false;
+			if (result is null)
+			{
+				await jsRuntime.InvokeVoidAsync("alert", "No data found");
+				return;
+			}
+			quest6ReportDto = result;
+			if (!quest6ReportDto.TopAreas.Any())
+			{
+				await jsRuntime.InvokeVoidAsync("alert", "No data found for Top Areas table");
+				return;
+			}
+			if (!quest6ReportDto.TopRptDistNos.Any())
+			{
+				await jsRuntime.InvokeVoidAsync("alert", "No data found for Top Rpt Dist Nos table");
+				return;
+			}
+		}
+		catch (HttpRequestException ex)
+		{
+			await jsRuntime.InvokeVoidAsync("alert", ex.Message);
+			isLoading = false;
+		}
+		catch (JsonException)
+		{
+			await jsRuntime.InvokeVoidAsync("alert", "No report Found");
+			isLoading = false;
+		}
+		catch (Exception ex)
+		{
+			await jsRuntime.InvokeVoidAsync("alert", ex.Message);
+			isLoading = false;
+		}
+	}
+}

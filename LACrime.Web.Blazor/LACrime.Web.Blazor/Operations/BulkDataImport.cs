@@ -7,6 +7,7 @@ using LACrimes.Model;
 using LACrimes.Web.Blazor.Server.Controllers;
 using LACrimes.Web.Blazor.Server.Helpers;
 using LACrimes.Web.Blazor.Shared;
+using LACrimes.Web.Blazor.Shared.CrimeRecordDtos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 

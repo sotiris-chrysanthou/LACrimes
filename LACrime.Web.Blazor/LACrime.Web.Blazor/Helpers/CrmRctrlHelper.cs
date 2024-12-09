@@ -1,6 +1,7 @@
 ﻿using LACrimes.EF.Repository;
 using LACrimes.Model;
 using LACrimes.Web.Blazor.Shared;
+using LACrimes.Web.Blazor.Shared.CrimeRecordDtos;
 using System.Xml.Linq;
 
 namespace LACrimes.Web.Blazor.Server.Helpers {
@@ -84,8 +85,8 @@ namespace LACrimes.Web.Blazor.Server.Helpers {
             var crimeRecord = new CrimeRecord {
                 ID = crimeRecordDto.ID ?? Guid.NewGuid(),
                 DrNo = crimeRecordDto.DrNo,
-                DateOcc = crimeRecordDto.DateOcc.ToUniversalTime(),
-                DateRptd = crimeRecordDto.DateRptd.ToUniversalTime(),
+                DateOcc = crimeRecordDto.DateOcc,
+                DateRptd = crimeRecordDto.DateRptd,
                 TimeOcc = crimeRecordDto.TimeOcc,
             };
             LinkSubAreaToCrimeRecord(subArea, isNewSubArea, crimeRecord);
@@ -102,65 +103,49 @@ namespace LACrimes.Web.Blazor.Server.Helpers {
 
 
         internal static void LinkCoordinatesToCrimeRecord(Coordinates? coordinates, bool isNewCoordinates, CrimeRecord crimeRecord) {
-            if(isNewCoordinates && coordinates is not null) {
-                crimeRecord.Coordinates = coordinates;
-            } else if(coordinates is not null) {
+            if(coordinates is not null) {
                 crimeRecord.CoordinatesID = coordinates.ID;
             }
         }
 
         internal static void LinkCrossStreetToCrimeRecord(Street? crossStreet, bool isNewCrossStreet, CrimeRecord crimeRecord) {
-            if(isNewCrossStreet && crossStreet is not null) {
-                crimeRecord.CrossStreet = crossStreet;
-            } else if(crossStreet is not null) {
+            if(crossStreet is not null) {
                 crimeRecord.CrossStreetID = crossStreet.ID;
             }
         }
 
         internal static void LinkStreetToCrimeRecord(Street street, bool isNewStreet, CrimeRecord crimeRecord) {
-            if(isNewStreet && street is not null) {
-                crimeRecord.Street = street;
-            } else if(street is not null) {
+            if(street is not null) {
                 crimeRecord.StreetID = street.ID;
             }
         }
 
         internal static void LinkStatusToCrimeRecord(Status status, bool isNewStatus, CrimeRecord crimeRecord) {
-            if(isNewStatus && status is not null) {
-                crimeRecord.Status = status;
-            } else if(status is not null) {
+            if(status is not null) {
                 crimeRecord.StatusID = status.ID;
             }
         }
 
         internal static void LinkWeaponToCrimeRecord(Weapon? weapon, bool isNewWeapon, CrimeRecord crimeRecord) {
-            if(isNewWeapon && weapon is not null) {
-                crimeRecord.Weapon = weapon;
-            } else if(weapon is not null) {
+            if(weapon is not null) {
                 crimeRecord.WeaponID = weapon.ID;
             }
         }
 
         internal static void LinkPremisToCrimeRecord(Premis? premis, bool isNewPremis, CrimeRecord crimeRecord) {
-            if(isNewPremis && premis is not null) {
-                crimeRecord.Premis = premis;
-            } else if(premis is not null) {
+            if(premis is not null) {
                 crimeRecord.PremisID = premis.ID;
             }
         }
 
         internal static void LinkVictimToCrimeRecord(Victim victim, bool isNewVictim, CrimeRecord crimeRecord) {
-            if(isNewVictim && victim is not null) {
-                crimeRecord.Victim = victim;
-            } else if(victim is not null) {
+            if(victim is not null) {
                 crimeRecord.VictimID = victim.ID;
             }
         }
 
         internal static void LinkSubAreaToCrimeRecord(SubArea? subArea, bool isNewSubArea, CrimeRecord crimeRecord) {
-            if(isNewSubArea && subArea is not null) {
-                crimeRecord.SubArea = subArea;
-            } else if(subArea is not null) {
+            if(subArea is not null) {
                 crimeRecord.SubAreaID = subArea.ID;
             }
         }
@@ -189,10 +174,11 @@ namespace LACrimes.Web.Blazor.Server.Helpers {
                     Lat = crimeRecordDto.Lat,
                     Lon = crimeRecordDto.Lon
                 };
-                isNewCoordinates = true;
                 if(lists is not null) {
                     lists.Coordinates.Add(coordinates);
                 }
+                isNewCoordinates = true;
+                await coordinatesRepo.Add(coordinates);
             }
             // If the CoordinatesID is not empty, then we need to fetch the Coordinates
             else if(crimeRecordDto.CoordinatesID != null && crimeRecordDto.CoordinatesID != Guid.Empty) {
@@ -230,6 +216,7 @@ namespace LACrimes.Web.Blazor.Server.Helpers {
                     lists.Streets.Add(street);
                 }
                 isNewStreet = true;
+                await streetRepo.Add(street);
             }
             // If the StreetID is not empty, then we need to fetch the Street
             else if(crimeRecordDto.StreetID != null && crimeRecordDto.StreetID != Guid.Empty) {
@@ -268,6 +255,7 @@ namespace LACrimes.Web.Blazor.Server.Helpers {
                     lists.Streets.Add(street);
                 }
                 isNewStreet = true;
+                await streetRepo.Add(street);
             }
             // If the StreetID is not empty, then we need to fetch the Street
             else if(crimeRecordDto.CrossStreetID != null && crimeRecordDto.CrossStreetID != Guid.Empty) {
@@ -313,6 +301,7 @@ namespace LACrimes.Web.Blazor.Server.Helpers {
                     lists.Statuses.Add(status);
                 }
                 isNewStatus = true;
+                await statusRepo.Add(status);
             }
             // If the StatusID is not empty, then we need to fetch the Status
             else if(crimeRecordDto.StatusID != null && crimeRecordDto.StatusID != Guid.Empty) {
@@ -358,6 +347,7 @@ namespace LACrimes.Web.Blazor.Server.Helpers {
                     lists.Weapons.Add(weapon);
                 }
                 isNewWeapon = true;
+                await weaponRepo.Add(weapon);
             }
             // If the WeaponID is not empty, then we need to fetch the Weapon
             else if(crimeRecordDto.WeaponID != null && crimeRecordDto.WeaponID != Guid.Empty) {
@@ -404,6 +394,7 @@ namespace LACrimes.Web.Blazor.Server.Helpers {
                     lists.Premises.Add(premis);
                 }
                 isNewPremis = true;
+                await premisRepo.Add(premis);
             }
             // If the PremisID is not empty, then we need to fetch the Premis
             else if(crimeRecordDto.PremisID != null && crimeRecordDto.PremisID != Guid.Empty) {
@@ -445,6 +436,7 @@ namespace LACrimes.Web.Blazor.Server.Helpers {
                     lists.Victims.Add(victim);
                 }
                 isNewVictim = true;
+                await victimRepo.Add(victim);
             }
             // If the VictimID is not empty, then we need to fetch the Victim
             else if(crimeRecordDto.VictimID != null && crimeRecordDto.VictimID != Guid.Empty) {
@@ -493,6 +485,7 @@ namespace LACrimes.Web.Blazor.Server.Helpers {
                     lists.SubAreas.Add(subArea);
                 }
                 isNewSubArea = true;
+                await subAreaRepo.Add(subArea);
             }
             // If the SubAreaID is not empty, then we need to fetch the SubArea
             else if(crimeRecordDto.SubAreaID != null && crimeRecordDto.SubAreaID != Guid.Empty) {
@@ -532,6 +525,7 @@ namespace LACrimes.Web.Blazor.Server.Helpers {
                 Name = areaName,
                 Code = areaCode
             };
+            await areaRepo.Add(area);
             if(lists is not null) {
                 lists.Areas.Add(area);
             }

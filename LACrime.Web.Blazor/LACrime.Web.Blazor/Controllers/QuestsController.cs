@@ -5,11 +5,12 @@ using LACrimes.EF.Repository;
 using LACrimes.Model;
 using LACrimes.Web.Blazor.Shared;
 using LACrimes.Web.Blazor.Shared.Quest;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Npgsql;
 
 
-namespace LACrimes.Web.Blazor.Server.Operations {
+namespace LACrimes.Web.Blazor.Server.Controllers {
     [Route("api/[controller]")]
     [ApiController]
     public class QuestsController : ControllerBase {
@@ -22,6 +23,7 @@ namespace LACrimes.Web.Blazor.Server.Operations {
         }
 
         [HttpGet("Quest1")]
+        [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> Quest1([FromQuery] DateTime startDate, [FromQuery] DateTime endDate) {
             try {
                 string filePath = Path.Combine(Directory.GetCurrentDirectory(), "SqlQueries", "Quest1.sql");
@@ -53,6 +55,7 @@ namespace LACrimes.Web.Blazor.Server.Operations {
         }
 
         [HttpGet("Quest2")]
+        [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> Quest2([FromQuery] int crmCd, [FromQuery] DateTime startDate, [FromQuery] DateTime endDate) {
             try {
                 string filePath = Path.Combine(Directory.GetCurrentDirectory(), "SqlQueries", "Quest2.sql");
@@ -83,6 +86,7 @@ namespace LACrimes.Web.Blazor.Server.Operations {
         }
 
         [HttpGet("Quest3")]
+        [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> Quest3([FromQuery] DateTime date) {
             try {
                 string filePath = Path.Combine(Directory.GetCurrentDirectory(), "SqlQueries", "Quest3.sql");
@@ -114,6 +118,7 @@ namespace LACrimes.Web.Blazor.Server.Operations {
         }
 
         [HttpGet("Quest4")]
+        [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> Quest4([FromQuery] DateTime startDate, [FromQuery] DateTime endDate) {
             try {
                 string filePath = Path.Combine(Directory.GetCurrentDirectory(), "SqlQueries", "Quest4.sql");
@@ -143,6 +148,7 @@ namespace LACrimes.Web.Blazor.Server.Operations {
         }
 
         [HttpGet("Quest5")]
+        [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> Quest5([FromQuery] DateTime date, [FromQuery] double minLat, [FromQuery] double maxLat, [FromQuery] double minLon, [FromQuery] double maxLon) {
             try {
                 string filePath = Path.Combine(Directory.GetCurrentDirectory(), "SqlQueries", "Quest5.sql");
@@ -175,6 +181,7 @@ namespace LACrimes.Web.Blazor.Server.Operations {
         }
 
         [HttpGet("Quest6")]
+        [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> Quest6([FromQuery] DateTime startDate, [FromQuery] DateTime endDate) {
             try {
                 var parameters = new[]
@@ -232,6 +239,7 @@ namespace LACrimes.Web.Blazor.Server.Operations {
         }
 
         [HttpGet("Quest7")]
+        [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> Quest7([FromQuery] DateTime startDate, [FromQuery] DateTime endDate) {
             try {
                 var parameters = new[] {
@@ -269,6 +277,7 @@ namespace LACrimes.Web.Blazor.Server.Operations {
         }
 
         [HttpGet("Quest8")]
+        [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> Quest8([FromQuery] int code, [FromQuery] DateTime startDate, [FromQuery] DateTime endDate) {
             try {
                 var parameters = new[] {
@@ -306,6 +315,7 @@ namespace LACrimes.Web.Blazor.Server.Operations {
         }
 
         [HttpGet("Quest9")]
+        [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> Quest9() {
             try {
                 string filePath = Path.Combine(Directory.GetCurrentDirectory(), "SqlQueries", "Quest9.sql");
@@ -315,7 +325,7 @@ namespace LACrimes.Web.Blazor.Server.Operations {
                     return BadRequest("SQL Query not found");
                 }
 
-                NpgsqlParameter[] parameters = new NpgsqlParameter[] {};
+                NpgsqlParameter[] parameters = new NpgsqlParameter[] { };
                 DataTable dt = await LACrimeSys.ExecuteQueryAsync(_context, sqlQuery, parameters);
                 var quest9Reports = dt.AsEnumerable()
                     .Select(row => new Quest9ReportDto {
@@ -335,6 +345,7 @@ namespace LACrimes.Web.Blazor.Server.Operations {
         }
 
         [HttpGet("Quest10")]
+        [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> Quest10([FromQuery] int crimeCode) {
             try {
                 string areaFilePath = Path.Combine(Directory.GetCurrentDirectory(), "SqlQueries", "Quest10Area.sql");
@@ -386,6 +397,7 @@ namespace LACrimes.Web.Blazor.Server.Operations {
             }
         }
         [HttpGet("Quest11")]
+        [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> Quest11([FromQuery] int crimeCode1, [FromQuery] int crimeCode2) {
             try {
                 string filePath = Path.Combine(Directory.GetCurrentDirectory(), "SqlQueries", "Quest11.sql");
@@ -417,7 +429,8 @@ namespace LACrimes.Web.Blazor.Server.Operations {
             }
         }
         [HttpGet("Quest12")]
-        public async Task<IActionResult> Quest12([FromQuery] DateTime date, [FromQuery] TimeOnly startTime, [FromQuery] TimeOnly endTime) {
+        [Authorize(Roles = "User,Admin")]
+        public async Task<IActionResult> Quest12([FromQuery] DateTime startDate, [FromQuery] DateTime endDate) {
             try {
                 string filePath = Path.Combine(Directory.GetCurrentDirectory(), "SqlQueries", "Quest12.sql");
                 string sqlQuery = await System.IO.File.ReadAllTextAsync(filePath);
@@ -427,9 +440,8 @@ namespace LACrimes.Web.Blazor.Server.Operations {
                 }
 
                 var parameters = new[] {
-                    new NpgsqlParameter("@date", date),
-                    new NpgsqlParameter("@startTime", startTime),
-                    new NpgsqlParameter("@endTime", endTime)
+                    new NpgsqlParameter("@startDate", startDate),
+                    new NpgsqlParameter("@endDate", endDate)
                 };
 
                 DataTable dt = await LACrimeSys.ExecuteQueryAsync(_context, sqlQuery, parameters);
@@ -448,6 +460,49 @@ namespace LACrimes.Web.Blazor.Server.Operations {
             }
         }
 
+        [HttpGet("Quest13")]
+        [Authorize(Roles = "User,Admin")]
+        public async Task<IActionResult> Quest13([FromQuery] DateTime startDate, [FromQuery] DateTime endDate, [FromQuery] int N) {
+            try {
+                string filePath = Path.Combine(Directory.GetCurrentDirectory(), "SqlQueries", "Quest13.sql");
+                string sqlQuery = await System.IO.File.ReadAllTextAsync(filePath);
 
+                if(string.IsNullOrEmpty(sqlQuery)) {
+                    return BadRequest("SQL Query not found.");
+                }
+
+                var parameters = new[]
+                {
+                    new NpgsqlParameter("@startDate", startDate),
+                    new NpgsqlParameter("@endDate", endDate),
+                    new NpgsqlParameter("@N", N)
+                };
+
+                DataTable dt = await LACrimeSys.ExecuteQueryAsync(_context, sqlQuery, parameters);
+                var quest13Reports = dt.AsEnumerable()
+                    .Select(row => new Quest13ReportDto {
+                        CrimeDate = Convert.ToDateTime(row["CrimeDate"]),
+                        AreaName = row["AreaName"].ToString() ?? string.Empty,
+                        WeaponCode = Convert.ToInt32(row["WeaponCode"]),
+                        WeaponDesc = row["WeaponDesc"].ToString() ?? string.Empty,
+                        CrimeCode = Convert.ToInt32(row["CrimeCode"]),
+                        CrimeDesc = row["CrimeDesc"].ToString() ?? string.Empty,
+                        ListOfDrNo = row["ListOfDrNo"].ToString() ?? string.Empty
+                    })
+                    .OrderBy(r => r.CrimeDate)
+                    .ThenBy(r => r.AreaName)
+                    .ThenBy(r => r.WeaponDesc)
+                    .ThenBy(r => r.CrimeDesc)
+                    .ToList();
+
+                if(!quest13Reports.Any()) {
+                    return NotFound("No data found for the specified criteria.");
+                }
+
+                return Ok(quest13Reports);
+            } catch(Exception ex) {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

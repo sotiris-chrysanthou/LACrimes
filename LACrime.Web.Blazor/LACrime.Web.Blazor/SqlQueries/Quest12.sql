@@ -10,8 +10,7 @@ WITH CrimeWeaponPairs AS (
     INNER JOIN crimeseverities crms ON crms.crimerecordid = crmr.id
     INNER JOIN subareas sa ON sa.id = crmr.subareaid
     WHERE
-        crmr.dateocc = @date
-		AND crmr.timeocc BETWEEN @startTime AND @endTime
+        crmr.dateocc + crmr.timeocc BETWEEN @startDate AND @endDate
 ),
 SameDayDifferentArea AS (
     SELECT

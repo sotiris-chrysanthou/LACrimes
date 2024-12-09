@@ -13,6 +13,8 @@
 
   <ItemGroup>
     <PackageReference Include="CsvHelper" Version="33.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="9.0.0" />
     <ProjectReference Include="..\..\LACrime.Core.Base\LACrime.Core.Base.csproj" />
     <ProjectReference Include="..\..\LACrimes.EF\LACrimes.EF.csproj" />
     <ProjectReference Include="..\LACrime.Web.Blazor.Client\LACrimes.Web.Blazor.Client.csproj" />

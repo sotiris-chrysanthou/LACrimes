@@ -36,7 +36,7 @@ namespace LACrimes.EF.Repository {
 
         public async Task<IList<Coordinates>> GetAll(Expression<Func<Coordinates, bool>>? predicate = null, bool IncludeAll = false) {
             if(predicate == null) {
-                predicate = c => false; // Is false because I don't want to return all records by default. Too many records
+                predicate = c => true; // Is true because I want to return all records by default.
             }
             using var context = new LACrimeDbContext(_onlyForTest);
             if(IncludeAll) {

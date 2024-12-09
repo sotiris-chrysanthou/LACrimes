@@ -1,0 +1,435 @@
+﻿@page "/searchCrimeRecord"
+@using System.Net.Http.Json
+@using BlazorBootstrap
+@using LACrimes.Web.Blazor.Client.Extensions
+@using LACrimes.Web.Blazor.Shared
+@using LACrimes.Web.Blazor.Shared.AreaDtos
+@using LACrimes.Web.Blazor.Shared.CrimeRecordDtos
+@using LACrimes.Web.Blazor.Shared.PremisDtos
+@using LACrimes.Web.Blazor.Shared.StatusDtos
+@using LACrimes.Web.Blazor.Shared.StreetDtos
+@using LACrimes.Web.Blazor.Shared.SubAreaDtos
+@using LACrimes.Web.Blazor.Shared.WeaponDtos
+@using System.Net.Http.Headers
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@inject HttpClient httpClient
+@inject IJSRuntime jsRuntime
+@inject NavigationManager navigationManager
+@inject AuthenticationStateProvider authStateProvider
+@rendermode InteractiveAuto
+@attribute [Authorize(Roles = "User,Admin")]
+
+<h3>Search Crime Records</h3>
+@if (isLoggingIn)
+{
+	<div class="spinner-border text-secondary" role="status"></div>
+}
+else
+{
+	<div class="mb-3">
+		<label for="drno" class="form-label">DrNo:</label>
+		<input type="text" id="drno" class="form-control" @bind="drno" />
+	</div>
+
+	<div class="mb-3">
+		<label for="daterptd" class="form-label">Date Reported:</label>
+		<input type="date" id="daterptd" class="form-control" @bind="daterptd" />
+	</div>
+
+	<div class="mb-3">
+		<label for="dateocc" class="form-label">Date Occurred:</label>
+		<input type="date" id="dateocc" class="form-control" @bind="dateocc" />
+	</div>
+
+	<div class="mb-3">
+		<label for="subAreaRpdDistNo" class="form-label">Rpd Dist No:</label>
+		<input list="filteredSubAreas1" id="subAreaRpdDistNo" class="form-control" @bind="subAreaRpdDistNo" placeholder="Select or type Dpt Dist No Code..." />
+		<datalist id="filteredSubAreas1">
+
+			@foreach (var subArea in filteredSubAreas)
+			{
+				<option value="@subArea.RpdDistNo">@subArea.RpdDistNo</option>
+			}
+		</datalist>
+	</div>
+
+	<div class="mb-3">
+		<label for="areaCode" class="form-label">Area Code:</label>
+		<input list="areaCodes" id="areaCode" class="form-control" @bind="areaCode" placeholder="Select or type Area Code..." />
+		<datalist id="areaCodes">
+			@foreach (var area in areas)
+			{
+				<option value="@area.Code">@area.Code</option>
+			}
+		</datalist>
+
+		<label for="areaName" class="form-label">Area Name:</label>
+		<input list="areaNames" id="areaName" class="form-control" @bind="areaName" placeholder="Select or type Area Name..." />
+		<datalist id="areaNames">
+			@foreach (var area in areas)
+			{
+				<option value="@area.Name"></option>
+			}
+		</datalist>
+	</div>
+
+	<div class="mb-3">
+		<label for="lat" class="form-label">Latitude:</label>
+		<input type="number" id="lat" class="form-control" @bind="lat" />
+	</div>
+
+	<div class="mb-3">
+		<label for="lon" class="form-label">Longitude:</label>
+		<input type="number" id="lon" class="form-control" @bind="lon" />
+	</div>
+
+	<div class="mb-3">
+		<label for="crimeDescription" class="form-label">Crime Description:</label>
+		<select id="crimeDescription" class="form-control" @bind="crimeDescription">
+			<option value="">Select Crime Description</option>
+			@foreach (var crime in crimes)
+			{
+				<option value="@crime.Desc">@crime.Desc</option>
+			}
+		</select>
+	</div>
+
+	<div class="mb-3">
+		<label for="premisDescription" class="form-label">Premis Description:</label>
+		<input list="premisDescriptions" id="premisDescription" class="form-control" @bind="premisDescription" placeholder="Select or type Premis Description..." />
+		<datalist id="premisDescriptions">
+			@foreach (var premis in premises)
+			{
+				<option value="@premis.Desc"></option>
+			}
+		</datalist>
+	</div>
+
+	<div>
+		<label for="statusCode" class="form-label">Status Code:</label>
+		<input list="statusCodes" id="statusCode" class="form-control" @bind="statusCode" placeholder="Select or type Status Code..." />
+		<datalist id="statusCodes">
+			@foreach (var status in statuses)
+			{
+				<option value="@status.Code">@status.Code</option>
+			}
+		</datalist>
+
+		<label for="statusDescription" class="form-label">Status Description:</label>
+		<input list="statusDescriptions" id="statusDescription" class="form-control" @bind="statusDescription" placeholder="Select or type Status Description..." />
+		<datalist id="statusDescriptions">
+			@foreach (var status in statuses)
+			{
+				<option value="@status.Desc">@status.Desc</option>
+			}
+		</datalist>
+	</div>
+
+	<div class="mb-3">
+		<label for="streetName" class="form-label">Street Name:</label>
+		<input list="streetNames" id="streetName" class="form-control" @bind="streetName" placeholder="Select or type Street Name..." />
+		<datalist id="streetNames">
+			@foreach (var street in streets)
+			{
+				<option value="@street.Name"></option>
+			}
+		</datalist>
+	</div>
+
+	<div class="mb-3">
+		<label for="streetName" class="form-label">Street Name:</label>
+		<input list="streetNames" id="streetName" class="form-control" @bind="crossStreetName" placeholder="Select or type Street Name..." />
+		<datalist id="streetNames">
+			@foreach (var street in streets)
+			{
+				<option value="@street.Name"></option>
+			}
+		</datalist>
+	</div>
+
+	<div class="mb-3">
+		<label for="victimAge" class="form-label">Victim Age:</label>
+		<input type="number" id="victimAge" class="form-control" @bind="victimAge" />
+	</div>
+
+	<div class="mb-3">
+		<label for="victimSex" class="form-label">Victim Sex:</label>
+		<select id="victimSex" class="form-control" @bind="victimSex">
+			<option value="">Select Victim Sex</option>
+			<option value="M">Male</option>
+			<option value="F">Female</option>
+			<option value="X">Unknown</option>
+		</select>
+	</div>
+
+	<div class="mb-3">
+		<label for="victimDescent" class="form-label">Victim Descent:</label>
+		<input type="text" id="victimDescent" class="form-control" @bind="victimDescent" />
+	</div>
+
+	<div class="mb-3">
+		<label for="weaponDescription" class="form-label">Weapon Description:</label>
+		<input list="weaponDescriptions" id="weaponDescription" class="form-control" @bind="weaponDescription" placeholder="Select or type Weapon Description..." />
+		<datalist id="weaponDescriptions">
+			@foreach (var weapon in weapons)
+			{
+				<option value="@weapon.Desc"></option>
+			}
+		</datalist>
+	</div>
+
+	<button class="btn btn-primary" @onclick="Search">Search</button>
+
+	@if (searchResults != null)
+	{
+		<h4>Results</h4>
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th>DrNo</th>
+					<th>Date Reported</th>
+					<th>Date Occurred</th>
+					<th>Time Occurred</th>
+					<th>Sub Area Rpd Dist No</th>
+					<th>Area Code</th>
+					<th>Area Name</th>
+					<th>Latitude</th>
+					<th>Longitude</th>
+					<th>Severities</th>
+					<th>Crimes</th>
+					<th>Premis Description</th>
+					<th>Status Description</th>
+					<th>Street Name</th>
+					<th>Cross Street Name</th>
+					<th>Victim Age</th>
+					<th>Victim Sex</th>
+					<th>Victim Descent</th>
+					<th>Weapon Description</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var result in searchResults)
+				{
+					<tr>
+						<Button Color="ButtonColor.Success" @onclick="()=> EditItem(result)">Edit</Button>
+						<td>@result.DrNo</td>
+						<td>@result.DateRptd.ToString("yyyy-MM-dd")</td>
+						<td>@result.DateOcc.ToString("yyyy-MM-dd")</td>
+						<td>@result.TimeOcc</td>
+						<td>@result.SubArea?.RpdDistNo</td>
+						<td>@result.Area?.Code</td>
+						<td>@result.Area?.Name</td>
+						<td>@result.Lat</td>
+						<td>@result.Lon</td>
+						<td>@string.Join(" || ", result.Severities)</td>
+						<td>@string.Join(" || ", result.Crimes.Select(crm => crm.Code.ToString() + "-" + crm.Desc.ToString()))</td>
+						<td>@result.Premis?.Desc</td>
+						<td>@result.Status?.Desc</td>
+						<td>@result.Street?.Name</td>
+						<td>@result.CrossStreet?.Name</td>
+						<td>@result.Victim?.Age</td>
+						<td>@result.Victim?.Sex</td>
+						<td>@result.Victim?.Descent</td>
+						<td>@result.Weapon?.Desc</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	}
+}
+@code {
+	private bool isLoggingIn = true;
+	private string? drno;
+	private DateTime? daterptd;
+	private DateTime? dateocc;
+	private string? _subAreaRpdDistNo;
+	private string? subAreaRpdDistNo
+	{
+		get => _subAreaRpdDistNo;
+		set
+		{
+			if (value is null)
+			{
+				return;
+			}
+			string tmpSubAreaRpdDistNo = value.ToString();
+			if (!string.IsNullOrEmpty(tmpSubAreaRpdDistNo) && !subAreas.Any(sa => sa.RpdDistNo == tmpSubAreaRpdDistNo))
+			{
+				return;
+			}
+			_subAreaRpdDistNo = tmpSubAreaRpdDistNo;
+			AreaDto? tmpAreaDto = subAreas.SingleOrDefault(sa => sa.RpdDistNo == tmpSubAreaRpdDistNo)?.Area;
+			if (tmpAreaDto is null)
+			{
+				return;
+			}
+
+			_areaCode = tmpAreaDto.Code;
+			_areaName = tmpAreaDto.Name;
+		}
+	}
+	private string? _areaCode;
+	private string? areaCode
+	{
+		get => _areaCode;
+		set
+		{
+			string? tmpAreaCode = value?.ToString();
+			if (!string.IsNullOrEmpty(tmpAreaCode) && !areas.Any(a => a.Code == tmpAreaCode))
+			{
+				filteredSubAreas = subAreas.ToList();
+				return;
+			}
+			_areaCode = tmpAreaCode;
+			filteredSubAreas = subAreas.Where(sa => sa.Area.Code == tmpAreaCode).ToList();
+			_areaName = areas.FirstOrDefault(a => a.Code == tmpAreaCode)?.Name;
+
+			_subAreaRpdDistNo = subAreas.FirstOrDefault(sa => sa.Area.Code == tmpAreaCode).RpdDistNo;
+		}
+	}
+	private string? _areaName;
+	private string? areaName
+	{
+		get => _areaName;
+		set
+		{
+			string? tmpAreaName = value?.ToString();
+			if (!string.IsNullOrEmpty(tmpAreaName) && !areas.Any(a => a.Name == tmpAreaName))
+			{
+				filteredSubAreas = subAreas.ToList();
+				return;
+			}
+			_areaName = tmpAreaName;
+			filteredSubAreas = subAreas.Where(sa => sa.Area.Name == tmpAreaName).ToList();
+			_areaCode = areas.FirstOrDefault(a => a.Name == tmpAreaName)?.Code;
+			_subAreaRpdDistNo = null;
+		}
+	}
+	private double? lat;
+	private double? lon;
+	private string? crimeDescription;
+	private string? premisDescription;
+	private string? _statusCode;
+	private string? statusCode
+	{
+		get => _statusCode;
+		set
+		{
+			if (value is null)
+			{
+				return;
+			}
+			string tmpStatusCode = value.ToString();
+			if (!string.IsNullOrEmpty(tmpStatusCode) && !statuses.Any(s => s.Code == tmpStatusCode))
+			{
+				return;
+			}
+			_statusCode = tmpStatusCode;
+			_statusDescription = statuses.FirstOrDefault(s => s.Code == tmpStatusCode)?.Desc;
+		}
+	}
+	private string? _statusDescription;
+	private string? statusDescription
+	{
+		get => _statusDescription;
+		set
+		{
+			if (value is null)
+			{
+				return;
+			}
+			string tmpStatusDescription = value.ToString();
+			if (!string.IsNullOrEmpty(tmpStatusDescription) && !statuses.Any(s => s.Desc == tmpStatusDescription))
+			{
+				return;
+			}
+			_statusDescription = tmpStatusDescription;
+			_statusCode = statuses.FirstOrDefault(s => s.Desc == tmpStatusDescription)?.Code;
+		}
+	}
+	private string? streetName;
+	private string? crossStreetName;
+	private int? victimAge;
+	private string? victimSex;
+	private string? victimDescent;
+	private string? weaponDescription;
+	private IList<SearchCrimeRecordDto>? searchResults;
+
+	private IList<SubAreaDto> subAreas = new List<SubAreaDto>();
+	private IList<SubAreaDto> filteredSubAreas = new List<SubAreaDto>();
+	private IList<AreaDto> areas = new List<AreaDto>();
+	private IList<CrimeDto> crimes = new List<CrimeDto>();
+	private IList<PremisDto> premises = new List<PremisDto>();
+	private IList<StatusDto> statuses = new List<StatusDto>();
+	private IList<StreetDto> streets = new List<StreetDto>();
+	private IList<WeaponDto> weapons = new List<WeaponDto>();
+
+	string token = string.Empty;
+
+	protected override async Task OnInitializedAsync()
+	{
+		var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+		token = await customAuthStateProvider.GetToken();
+		if (!String.IsNullOrWhiteSpace(token))
+		{
+			httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+			subAreas = await httpClient.GetFromJsonAsync<List<SubAreaDto>>("api/Lookup/SubAreas");
+			filteredSubAreas = subAreas.ToList();
+			areas = await httpClient.GetFromJsonAsync<List<AreaDto>>("api/Lookup/Areas");
+			crimes = await httpClient.GetFromJsonAsync<List<CrimeDto>>("api/Lookup/Crimes");
+			premises = await httpClient.GetFromJsonAsync<List<PremisDto>>("api/Lookup/Premises");
+			statuses = await httpClient.GetFromJsonAsync<List<StatusDto>>("api/Lookup/Statuses");
+			streets = await httpClient.GetFromJsonAsync<List<StreetDto>>("api/Lookup/Streets");
+			weapons = await httpClient.GetFromJsonAsync<List<WeaponDto>>("api/Lookup/Weapons");
+			isLoggingIn = false;
+		}
+		else
+		{
+			await jsRuntime.InvokeVoidAsync("alert", "Please login first");
+			navigationManager.NavigateTo("/login", true);
+		}
+	}
+
+	private async Task EditItem(SearchCrimeRecordDto searchCrimeRecordDto)
+	{
+		navigationManager.NavigateTo($"/CrimeRecord/edit/{searchCrimeRecordDto.ID}");
+	}
+
+	private async Task Search()
+	{
+		var queryParams = new Dictionary<string, string>();
+		if (!string.IsNullOrEmpty(drno)) queryParams.Add("drno", drno);
+		if (daterptd.HasValue) queryParams.Add("daterptd", daterptd.Value.ToString("yyyy-MM-dd"));
+		if (dateocc.HasValue) queryParams.Add("dateocc", dateocc.Value.ToString("yyyy-MM-dd"));
+		if (!string.IsNullOrEmpty(subAreaRpdDistNo)) queryParams.Add("subAreaRpdDistNo", subAreaRpdDistNo);
+		if (!string.IsNullOrEmpty(areaCode)) queryParams.Add("areaCode", areaCode);
+		if (!string.IsNullOrEmpty(areaName)) queryParams.Add("areaName", areaName);
+		if (lat.HasValue) queryParams.Add("lat", lat.Value.ToString());
+		if (lon.HasValue) queryParams.Add("lon", lon.Value.ToString());
+		if (!string.IsNullOrEmpty(crimeDescription)) queryParams.Add("crimeDescription", crimeDescription);
+		if (!string.IsNullOrEmpty(premisDescription)) queryParams.Add("premisDescription", premisDescription);
+		if (!string.IsNullOrEmpty(statusDescription)) queryParams.Add("statusDescription", statusDescription);
+		if (!string.IsNullOrEmpty(streetName)) queryParams.Add("streetName", streetName);
+		if (!string.IsNullOrEmpty(crossStreetName)) queryParams.Add("crossStreetName", crossStreetName);
+		if (victimAge.HasValue) queryParams.Add("victimAge", victimAge.Value.ToString());
+		if (!string.IsNullOrEmpty(victimSex)) queryParams.Add("victimSex", victimSex);
+		if (!string.IsNullOrEmpty(victimDescent)) queryParams.Add("victimDescent", victimDescent);
+		if (!string.IsNullOrEmpty(weaponDescription)) queryParams.Add("weaponDescription", weaponDescription);
+
+		var queryString = string.Join("&", queryParams.Select(kvp => $"{kvp.Key}={kvp.Value}"));
+		httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+		var response = await httpClient.GetAsync($"api/Search/Search?{queryString}");
+
+		if (response.IsSuccessStatusCode)
+		{
+			searchResults = await response.Content.ReadFromJsonAsync<List<SearchCrimeRecordDto>>();
+		}
+		else
+		{
+			var errorMessage = await response.Content.ReadAsStringAsync();
+			await jsRuntime.InvokeVoidAsync("alert", $"Error fetching search results: {errorMessage}");
+		}
+	}
+}
+

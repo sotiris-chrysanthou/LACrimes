@@ -36,7 +36,7 @@ namespace LACrimes.EF.Repository {
 
         public async Task<IList<Weapon>> GetAll(Expression<Func<Weapon, bool>>? predicate = null, bool IncludeAll = false) {
             if(predicate == null) {
-                predicate = w => false; // Is false because I don't want to return all records by default. Too many records
+                predicate = w => true; // Is true because I want to return all records by default.
             }
             using var context = new LACrimeDbContext(_onlyForTest);
             if(IncludeAll) {
@@ -46,7 +46,6 @@ namespace LACrimes.EF.Repository {
                     .ToListAsync();
             }
             return await context.Weapons
-                .Include(w => w.CrimeRecords)
                 .Where(predicate)
                 .ToListAsync();
         }

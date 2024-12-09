@@ -22,6 +22,36 @@ namespace LACrimes.EF.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("LACrimes.Model.Account", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("password");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("role");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("userame");
+
+                    b.HasKey("Id")
+                        .HasName("pk_accounts");
+
+                    b.ToTable("accounts", (string)null);
+                });
+
             modelBuilder.Entity("LACrimes.Model.Area", b =>
                 {
                     b.Property<Guid>("ID")
@@ -108,11 +138,11 @@ namespace LACrimes.EF.Migrations
                         .HasColumnName("crossstreetid");
 
                     b.Property<DateTime>("DateOcc")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateocc");
 
                     b.Property<DateTime>("DateRptd")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("daterptd");
 
                     b.Property<string>("DrNo")

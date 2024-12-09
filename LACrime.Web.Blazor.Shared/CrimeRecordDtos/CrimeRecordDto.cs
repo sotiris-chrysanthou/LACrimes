@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using LACrimes.Model;
 
-namespace LACrimes.Web.Blazor.Shared {
+namespace LACrimes.Web.Blazor.Shared.CrimeRecordDtos {
     public class CrimeRecordDto {
         public CrimeRecordDto(CrimeRecord crmR) {
             ID = crmR.ID;
@@ -31,44 +31,44 @@ namespace LACrimes.Web.Blazor.Shared {
         }
 
         public CrimeRecordDto() {
-            
+
         }
 
         [Required] public Guid? ID { get; set; }
-        [Required] public String DrNo { get; set; } = null!;
+        [Required] public string DrNo { get; set; } = null!;
         [Required] public DateTime DateRptd { get; set; }
         [Required] public DateTime DateOcc { get; set; }
         [Required] public TimeOnly TimeOcc { get; set; }
 
         #region Relations
-        public List<CrimeSeverityDto> CrimeSeverities { get; set; } = null!;
+        public List<CrimeSeverityDto> CrimeSeverities { get; set; } = new List<CrimeSeverityDto>();
         public Guid? AreaID { get; set; }
-        public String AreaCode { get; set; } = null!;
-        public String AreaName { get; set; } = null!;
+        public string AreaCode { get; set; } = null!;
+        public string AreaName { get; set; } = null!;
         public Guid? SubAreaID { get; set; }
-        public String RpdDistNo { get; set; } = null!;
+        public string RpdDistNo { get; set; } = null!;
 
         public Guid? VictimID { get; set; }
         public int VictAge { get; set; }
-        [StringLength(1)] public String? VictSex { get; set; } = null!;
-        [StringLength(1)] public String? VictimDescent { get; set; } = null!;
+        [StringLength(1)] public string? VictSex { get; set; } = null!;
+        [StringLength(1)] public string? VictimDescent { get; set; } = null!;
 
         public Guid? PremisID { get; set; }
         public int? PremisCode { get; set; }
-        public String? PremisDesc { get; set; } = null!;
+        public string? PremisDesc { get; set; } = null!;
 
         public Guid? StatusID { get; set; }
-        public String StatusCode { get; set; } = null!;
-        public String StatusDesc { get; set; } = null!;
+        public string StatusCode { get; set; } = null!;
+        public string StatusDesc { get; set; } = null!;
 
         public Guid? WeaponID { get; set; }
         public int? WeaponCode { get; set; }
-        public String? WeaponDesc { get; set; } = null!;
+        public string? WeaponDesc { get; set; } = null!;
 
         public Guid? StreetID { get; set; }
-        public String StreetName { get; set; } = null!;
+        public string StreetName { get; set; } = null!;
         public Guid? CrossStreetID { get; set; }
-        public String? CrossStreetName { get; set; } = null!;
+        public string? CrossStreetName { get; set; } = null!;
 
         public Guid? CoordinatesID { get; set; }
         public double Lat { get; set; }

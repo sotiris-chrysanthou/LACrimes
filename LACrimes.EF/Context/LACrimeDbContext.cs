@@ -16,6 +16,7 @@ namespace LACrimes.EF.Context {
 
         public LACrimeDbContext(bool onlyForTest = false) : base() {
             _onlyForTest = onlyForTest;
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         }
 
         public DbSet<Area> Areas { get; set; } = null!;
@@ -29,6 +30,7 @@ namespace LACrimes.EF.Context {
         public DbSet<Victim> Victims { get; set; } = null!;
         public DbSet<Weapon> Weapons { get; set; } = null!;
         public DbSet<CrimeSeverity> CrimeSeverities { get; set; } = null!;
+        public DbSet<Account> Accounts { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
             modelBuilder.ApplyConfiguration(new AreaConfiguration());
@@ -42,6 +44,7 @@ namespace LACrimes.EF.Context {
             modelBuilder.ApplyConfiguration(new VictimConfiguration());
             modelBuilder.ApplyConfiguration(new WeaponConfiguration());
             modelBuilder.ApplyConfiguration(new CrimeSeverityConfiguration());
+            modelBuilder.ApplyConfiguration(new AccountConfiguration());
             foreach(var entity in modelBuilder.Model.GetEntityTypes()) {
                 // Set table name to lowercase
                 entity.SetTableName(entity.GetTableName()?.ToLower());

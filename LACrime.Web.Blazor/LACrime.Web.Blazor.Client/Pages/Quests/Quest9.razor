@@ -1,0 +1,109 @@
+﻿@page "/quest9"
+@using System.Net.Http.Json
+@using LACrimes.Web.Blazor.Client.Extensions
+@using LACrimes.Web.Blazor.Shared.Quest
+@using System.Text.Json
+@using System.Net.Http.Headers
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@inject HttpClient httpClient
+@inject IJSRuntime jsRuntime
+@inject NavigationManager navigationManager
+@inject IJSRuntime jsRuntime
+@inject AuthenticationStateProvider authStateProvider
+@attribute [Authorize(Roles = "User,Admin")]
+
+<h3>Quest 9</h3>
+<h6>Find the most common type of weapon used against victims depending on their age group.</h6>
+
+@if (isLoggingIn)
+{
+	<div class="spinner-border text-secondary" role="status"></div>
+}
+else
+{
+	<button @onclick="GetQuest9Data">Get Reports</button>
+	if (isLoading)
+	{
+		<div class="spinner-border text-secondary" role="status">
+		</div>
+	}
+
+	if (quest9Reports != null)
+	{
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th>Age Group</th>
+					<th>Weapon Code</th>
+					<th>Weapon Description</th>
+					<th>Occurrences</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var item in quest9Reports)
+				{
+					<tr>
+						<td>@item.AgeGroup</td>
+						<td>@item.WeaponCode</td>
+						<td>@item.WeaponDescription</td>
+						<td>@item.Count</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	}
+}
+
+@code {
+	private bool isLoading = false;
+	private bool isLoggingIn = true;
+	private List<Quest9ReportDto>? quest9Reports;
+
+	protected override async Task OnInitializedAsync()
+	{
+		var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+		var token = await customAuthStateProvider.GetToken();
+		if (!String.IsNullOrWhiteSpace(token))
+		{
+			httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+			isLoggingIn = false;
+		}
+		else
+		{
+			await jsRuntime.InvokeVoidAsync("alert", "Please login first");
+			navigationManager.NavigateTo("/login", true);
+		}
+	}
+
+	private async Task GetQuest9Data()
+	{
+		try
+		{
+			isLoading = true;
+			var response = await httpClient.GetFromJsonAsync<List<Quest9ReportDto>>("api/Quests/Quest9");
+			isLoading = false;
+			if (response is null || !response.Any())
+			{
+				await jsRuntime.InvokeVoidAsync("alert", "No data found");
+				return;
+			}
+			quest9Reports = response;
+		}
+		catch (HttpRequestException ex)
+		{
+			await jsRuntime.InvokeVoidAsync("alert", ex.Message);
+			isLoading = false;
+		}
+		catch (JsonException)
+		{
+			await jsRuntime.InvokeVoidAsync("alert", "No report Found");
+			isLoading = false;
+		}
+		catch (Exception ex)
+		{
+			await jsRuntime.InvokeVoidAsync("alert", ex.Message);
+			isLoading = false;
+		}
+	}
+}

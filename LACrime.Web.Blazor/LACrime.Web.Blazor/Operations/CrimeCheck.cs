@@ -6,11 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.JSInterop;
 
 namespace LACrimes.Web.Blazor.Server.Operations {
-    public class CrimeCheck : Controller {
+    [Route("api/[controller]")]
+    [ApiController]
+    public class CrimeCheckController : Controller {
 
-        [Route("/api/Crime/Check/{crimeCode}&{crimeDesc}")]
         [HttpGet]
-        public async Task<ActionResult<CrimeCheckResponse?>> Execute(int crimeCode, string crimeDesc) {
+        public async Task<ActionResult<CrimeCheckResponse?>> Execute(int crimeCode, string? crimeDesc) {
             try {
                 CrimeCheckResponse response = new CrimeCheckResponse();
                 CrimeRepo crimeRepo = new CrimeRepo();
