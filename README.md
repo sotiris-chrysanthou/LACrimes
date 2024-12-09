@@ -23,19 +23,19 @@
    - [victims table](#victims)  
    - [weapons table](#weapons)  
 3. [SQL Queries](#sql-queries)
-   - [Query 1](#query-1) 
-   - [Query 2](#query-2) 
-   - [Query 3](#query-3) 
-   - [Query 4](#query-4) 
-   - [Query 5](#query-5) 
-   - [Query 6](#query-6) 
-   - [Query 7](#query-7) 
-   - [Query 8](#query-8) 
-   - [Query 9](#query-9) 
-   - [Query 10](#query-10) 
-   - [Query 11](#query-11) 
-   - [Query 12](#query-12) 
-   - [Query 13](#query-13) 
+   - [Query 1](#query1) 
+   - [Query 2](#query2) 
+   - [Query 3](#query3) 
+   - [Query 4](#query4) 
+   - [Query 5](#query5) 
+   - [Query 6](#query6) 
+   - [Query 7](#query7) 
+   - [Query 8](#query8) 
+   - [Query 9](#query9) 
+   - [Query 10](#query10) 
+   - [Query 11](#query11) 
+   - [Query 12](#query12) 
+   - [Query 13](#query13) 
 
 ---
 
@@ -148,7 +148,7 @@ The project fulfills the following objectives:
 
 ## 🛠️ **SQL Queries**
 
-### **Query 1**: Find the total number of reports per “Crm Cd” that occurred within a specified time range and sort them in descending order
+### **Query1**: Find the total number of reports per “Crm Cd” that occurred within a specified time range and sort them in descending order
 ```sql
 SELECT 
     crm.code AS CrmCd, 
@@ -163,7 +163,7 @@ GROUP BY crm.code, crm."desc"
 ORDER BY TotalReports DESC;
 ```
 
-### **Query 2**: Find the total number of reports per day for a specific “Crm Cd” and time range.
+### **Query2**: Find the total number of reports per day for a specific “Crm Cd” and time range.
 ```sql
 SELECT 
     crmr.dateocc::date AS ReportDate, COUNT(*) AS TotalReports
@@ -177,7 +177,7 @@ GROUP BY crmr.dateocc
 ORDER BY crmr.dateocc
 ```
 
-### **Query 3**: Find the most common crime committed regardless of code 1, 2, 3, and 4, per area for a specific day.
+### **Query3**: Find the most common crime committed regardless of code 1, 2, 3, and 4, per area for a specific day.
 ```sql
 SELECT 
     a.code AS AreaCode,
@@ -196,7 +196,7 @@ WHERE
 GROUP BY a.code, a.name, crm.code, crm."desc"
 ORDER BY a.name, TotalReports DESC
 ```
-### **Query 4**: Find the average number of crimes occurred per hour (24 hours) for a specific date range.
+### **Query4**: Find the average number of crimes occurred per hour (24 hours) for a specific date range.
 ```sql
 SELECT 
     hour,
@@ -215,7 +215,7 @@ FROM
 GROUP BY hour
 ORDER BY hour;
 ```
-### **Query 5**: Find the mostcommon“Crm Cd”inaspecifiedboundingbox(asdesignated by GPS-coordinates) for a specific day.
+### **Query5**: Find the mostcommon“Crm Cd”inaspecifiedboundingbox(asdesignated by GPS-coordinates) for a specific day.
 ```sql
 SELECT 
     crm.code AS CrmCd,
@@ -233,7 +233,7 @@ GROUP BY crm.code
 ORDER BY TotalReports DESC
 LIMIT 1;
 ```
-### **Query 6**: Find the top-5 Area names with regards to total number of crimes reported per day for a specific date range. The same for Rpt Dist No.
+### **Query6**: Find the top-5 Area names with regards to total number of crimes reported per day for a specific date range. The same for Rpt Dist No.
 
 ### Top 5 areas
 ```sql
@@ -273,7 +273,7 @@ ORDER BY
     TotalCrimes DESC
 LIMIT 5;
 ```
-### **Query 7**: Find the pair of crimes that has co-occurred in the area with the most reported incidents for a specific date range.
+### **Query7**: Find the pair of crimes that has co-occurred in the area with the most reported incidents for a specific date range.
 ```sql
 WITH AreaIncidents AS (
     SELECT 
@@ -333,7 +333,7 @@ ORDER BY
 	CoOccurrences DESC
 LIMIT 1
 ```
-### **Query 8**: Find the second most common crime that has co-occurred with a particular crime for a specifi date range.
+### **Query8**: Find the second most common crime that has co-occurred with a particular crime for a specifi date range.
 ```sql
 SELECT 
 	crm1.code AS Crime1Code,
@@ -358,7 +358,7 @@ GROUP BY
 ORDER BY CrimeCount DESC
 OFFSET 1 LIMIT 1
 ```
-### **Query 9**: Find the most common type of weapon used against victims depending on their group of age. The age groups are formed by bucketing ages every 5 years, e.g., 0 ≤ x < 5, 5 ≤ x < 10, etc..
+### **Query9**: Find the most common type of weapon used against victims depending on their group of age. The age groups are formed by bucketing ages every 5 years, e.g., 0 ≤ x < 5, 5 ≤ x < 10, etc..
 ```sql
 WITH RankedWeapons AS (
     SELECT
@@ -393,7 +393,7 @@ WHERE
 ORDER BY
     AgeGroup;
 ```
-### **Query 10**: Find the area with the longest time range without an occurrence of a specific crime. Include the time range in the results. The same for Rpt Dist No.
+### **Query10**: Find the area with the longest time range without an occurrence of a specific crime. Include the time range in the results. The same for Rpt Dist No.
 #### Area
 ```sql
 WITH crime_date_ranges AS (
@@ -516,7 +516,7 @@ ORDER BY
     MaxGapDays DESC
 LIMIT 1;
 ```
-### **Query 11**: For 2 crimes of your choice, find all areas that have received more than 1 report on each of these 2 crimes on the same day. The 2 crimes could be for example: “CHILD ANNOYING (17YRS & UNDER)” or “THEFT OF IDENTITY”. Do not restrict yourself to just these 2 specific types of crimes of course!
+### **Query11**: For 2 crimes of your choice, find all areas that have received more than 1 report on each of these 2 crimes on the same day. The 2 crimes could be for example: “CHILD ANNOYING (17YRS & UNDER)” or “THEFT OF IDENTITY”. Do not restrict yourself to just these 2 specific types of crimes of course!
 ```sql
 WITH crime_counts AS (
     SELECT
@@ -551,7 +551,7 @@ WHERE
 ORDER BY
     AreaName, CrimeDate;
 ```
-### **Query 12**: Find the number of division of records for crimes reported on the same day in different areas using the same weapon for a specific time range.
+### **Query12**: Find the number of division of records for crimes reported on the same day in different areas using the same weapon for a specific time range.
 ```sql
 WITH CrimeWeaponPairs AS (
     SELECT
@@ -584,7 +584,7 @@ FROM
     SameDayDifferentArea cwp1
 ```
 
-### **Query 13**: Find the crimes that occurred for a given number of times N on the same day, in the same area, using the same weapon, for a specific time range. Return the list of division of records numbers, the area name, the crime code description and the weapon description.
+### **Query13**: Find the crimes that occurred for a given number of times N on the same day, in the same area, using the same weapon, for a specific time range. Return the list of division of records numbers, the area name, the crime code description and the weapon description.
 ```sql
 WITH CrimeOccurrences AS (
     SELECT
