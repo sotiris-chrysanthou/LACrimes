@@ -25,16 +25,14 @@ else
 	<div>
 		<label>Crm Cd:</label>
 		<input @bind="crmCd" type="number" />
-	</div>
-	<div>
+
 		<label>Start Date:</label>
 		<input type="date" @bind="startDate" />
-	</div>
-	<div>
+
 		<label>End Date:</label>
 		<input type="date" @bind="endDate" />
+		<button @onclick="GetCrimeReports">Get Reports</button>
 	</div>
-	<button @onclick="GetCrimeReports">Get Reports</button>
 	if (isLoading)
 	{
 		<div class="spinner-border text-secondary" role="status">

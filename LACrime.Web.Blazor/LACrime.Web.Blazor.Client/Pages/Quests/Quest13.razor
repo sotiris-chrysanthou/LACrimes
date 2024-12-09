@@ -104,7 +104,7 @@ else
 		if (!String.IsNullOrWhiteSpace(token))
 		{
 			httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
-			isLoading = false;
+			isLoggingIn = false;
 		}
 		else
 		{
